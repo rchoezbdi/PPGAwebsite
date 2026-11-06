@@ -538,10 +538,10 @@ a {
 }
 .rich-content__inline-flag {
   display: inline-block;
-  width: 24px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   margin-inline-end: 0.375rem;
-  border-radius: 2px;
+  border-radius: 50%;
   object-fit: cover;
   vertical-align: middle;
 }
