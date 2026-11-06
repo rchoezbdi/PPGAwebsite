@@ -1,0 +1,13 @@
+# Best Doctors Insurance
+
+> Official public information about Best Doctors Insurance and its health coverage services.
+
+## Crawl guidance
+
+- Use the XML sitemap to discover published, indexable pages and available languages for this host.
+- Prefer canonical page URLs and do not infer unpublished routes.
+- Follow the site's applicable terms and copyright notices when reusing content.
+
+## Sitemap
+
+- [Published pages](/sitemap.xml)

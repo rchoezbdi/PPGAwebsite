@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <rect width="192" height="192" fill="#075c99"/>
+  <g fill="#fff">
+    <circle cx="72" cy="24" r="7"/><circle cx="96" cy="24" r="7"/><circle cx="120" cy="24" r="7"/>
+    <circle cx="72" cy="48" r="7"/><circle cx="96" cy="48" r="7"/><circle cx="120" cy="48" r="7"/>
+    <circle cx="24" cy="72" r="7"/><circle cx="48" cy="72" r="7"/><circle cx="72" cy="72" r="7"/><circle cx="96" cy="72" r="7"/><circle cx="144" cy="72" r="7"/><circle cx="168" cy="72" r="7"/>
+    <circle cx="24" cy="96" r="7"/><circle cx="48" cy="96" r="7"/><circle cx="72" cy="96" r="7"/><circle cx="96" cy="96" r="7"/><circle cx="144" cy="96" r="7"/><circle cx="168" cy="96" r="7"/>
+    <circle cx="24" cy="120" r="7"/><circle cx="48" cy="120" r="7"/><circle cx="72" cy="120" r="7"/><circle cx="96" cy="120" r="7"/><circle cx="120" cy="120" r="7"/><circle cx="144" cy="120" r="7"/><circle cx="168" cy="120" r="7"/>
+    <circle cx="72" cy="144" r="7"/><circle cx="96" cy="144" r="7"/><circle cx="120" cy="144" r="7"/>
+    <circle cx="72" cy="168" r="7"/><circle cx="96" cy="168" r="7"/><circle cx="120" cy="168" r="7"/>
+  </g>
+  <path d="M121 62l5 18 18-5-13 14 13 14-18-5-5 18-5-18-18 5 13-14-13-14 18 5z" fill="#d9edf9" stroke="#fff" stroke-width="2"/>
+</svg>
