@@ -536,6 +536,15 @@ a {
 .section--primary .rich-content-box p {
   color: var(--neutral-soft);
 }
+.rich-content__inline-flag {
+  display: inline-block;
+  width: 24px;
+  height: 16px;
+  margin-inline-end: 0.375rem;
+  border-radius: 2px;
+  object-fit: cover;
+  vertical-align: middle;
+}
 .section--primary .section-heading h2 {
   color: var(--surface);
 }

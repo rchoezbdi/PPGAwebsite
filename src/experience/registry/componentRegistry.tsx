@@ -27,6 +27,37 @@ import { AlignWrap, BadgeAtom, DividerAtom, EmbedAtom, HeadingAtom, ImageAtom, L
 
 const FeaturesSection = dynamic(() => import('@/experience/components/organisms/FeaturesSection'))
 
+const richContentInlineFlags = [
+  ['🇺🇸', 'us'],
+  ['🇪🇨', 'ec'],
+  ['🇻🇪', 've'],
+  ['🇪🇸', 'es'],
+  ['🇨🇱', 'cl'],
+  ['🇲🇽', 'mx'],
+  ['🇵🇪', 'pe'],
+  ['🇧🇷', 'br'],
+  ['🇹🇹', 'tt'],
+] as const
+
+function renderRichContentLine(line: string, key: string) {
+  const flag = richContentInlineFlags.find(([emoji]) => line.startsWith(emoji))
+  if (!flag) return <React.Fragment key={key}>{line}</React.Fragment>
+  const [emoji, countryCode] = flag
+  return (
+    <React.Fragment key={key}>
+      <img
+        alt=""
+        aria-hidden="true"
+        className="rich-content__inline-flag"
+        height={16}
+        src={`/flags/4x3/${countryCode}.svg`}
+        width={24}
+      />
+      {line.slice(emoji.length).trimStart()}
+    </React.Fragment>
+  )
+}
+
 /**
  * Maps a backend `Component.code` (e.g. "hero", "card-grid") to the React component that
  * renders it. This is the single place new component codes get wired up — PageRenderer never
@@ -366,7 +397,9 @@ function RichComponent({ content, locale, settings, site }: ExperienceComponentP
             return isFinancialPortfolioEmphasis ? <strong className="financial-pro-portfolio__emphasis" key={partIndex}>{part}</strong> : isAmount ? <strong className="financial-performance__amount" key={partIndex}>{part}</strong> : isCompany ? <strong className="financial-performance__brand" key={partIndex}>{part}</strong> : <React.Fragment key={partIndex}>{part}</React.Fragment>
           }) : isWhyBestDoctorsResultsClose && index === 0 ? paragraph.split('•').map((item) => <span key={item.trim()}>{item.trim()}</span>) : isCareersPeopleStory && paragraph.includes('Best Doctors Insurance')
             ? <>{paragraph.split('Best Doctors Insurance')[0]}<br />Best Doctors Insurance{paragraph.split('Best Doctors Insurance').slice(1).join('Best Doctors Insurance')}</>
-            : paragraph.split('\n').flatMap((line, lineIndex) => (lineIndex === 0 ? [line] : [<br key={lineIndex} />, line]))}</p>
+            : paragraph.split('\n').flatMap((line, lineIndex) => (lineIndex === 0
+              ? [renderRichContentLine(line, `line-${lineIndex}`)]
+              : [<br key={`line-break-${lineIndex}`} />, renderRichContentLine(line, `line-${lineIndex}`)]))}</p>
           return isFinancialDifference && index === 0
             ? [paragraphNode, <h2 className="financial-difference__statement" key="difference-statement">{financialDifferenceStatement.before}<mark>{financialDifferenceStatement.highlight}</mark></h2>]
             : [paragraphNode]
