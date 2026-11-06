@@ -106,6 +106,7 @@ export function PageRenderer({
           : undefined
         const content: Record<string, unknown> = {
           ...sourceContent,
+          ...(String(component.code ?? '').toLowerCase() === 'form' ? { turnstileSiteKey: process.env.TURNSTILE_SITE_KEY ?? '' } : {}),
           ...(isFinancialPerformance ? { variant: 'financial-performance' } : {}),
           ...(financialSectionVariant ? { variant: financialSectionVariant } : {}),
           ...(isFinancialMetrics ? { financialPresentation: true } : {}),

@@ -82,10 +82,9 @@ declare global {
  * `window.turnstile` to be ready since the <Script> tag and this component can settle in either
  * order. Replaces the earlier reCAPTCHA v2 integration (23 sep, explicit product decision — one
  * human-verification widget per form, not two). */
-function useTurnstile() {
+function useTurnstile(siteKey: string) {
   const containerRef = useRef<HTMLDivElement>(null)
   const widgetId = useRef<string | undefined>(undefined)
-  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
 
   useEffect(() => {
     if (!siteKey) return
@@ -128,7 +127,7 @@ function FormBody({ instanceId, locale, p }: { instanceId?: string | number; loc
   const [status, setStatus] = useState<Status>('idle')
   const [errorMessage, setErrorMessage] = useState('')
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
-  const turnstile = useTurnstile()
+  const turnstile = useTurnstile(String(p.turnstileSiteKey ?? ''))
   const hasCountryField = fields.some((field) => text(field.type) === 'country')
   const [countryOptions, setCountryOptions] = useState<string[]>(FALLBACK_COUNTRIES)
   const [cityOptions, setCityOptions] = useState<string[]>([])
