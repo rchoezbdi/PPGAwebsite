@@ -1,6 +1,7 @@
 'use client'
 
 import Icon from './Icon'
+import type { EditableButtonVariant } from './buttonVariants'
 
 /**
  * The public site has three visual button treatments: cyan CTA, navy solid and
@@ -8,7 +9,7 @@ import Icon from './Icon'
  * Legacy aliases are accepted only while old page data is migrated; they render
  * through one of these semantic treatments instead of creating more styles.
  */
-export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'white' | 'ghost' | 'danger' | 'tertiary' | 'light' | 'dark' | 'bright'
+export type ButtonVariant = EditableButtonVariant | 'ghost' | 'danger' | 'tertiary' | 'light' | 'dark' | 'bright'
 export type ButtonSize = 'sm' | 'md' | 'lg' | 'small' | 'medium' | 'large'
 
 export type ButtonProps = {

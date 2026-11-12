@@ -1,3 +1,5 @@
+import { EDITABLE_BUTTON_VARIANTS } from '@/experience/components/atoms/buttonVariants'
+
 export type ValidationIssue = { path: string; message: string }
 export type ValidationResult = { valid: boolean; issues: ValidationIssue[] }
 export type ExperienceCategory = 'Contenido' | 'Marketing' | 'Conversion' | 'Productos' | 'Confianza'
@@ -20,6 +22,8 @@ export type ExperienceFieldSchema = {
     | 'flag'
     | 'richText'
     | 'date'
+  /** `button` marks a group that is a Button instance (label, variant, destination). */
+  role?: 'button'
   localized?: boolean
   required?: boolean
   defaultValue?: string | number | boolean
@@ -73,10 +77,11 @@ const cta = (name: string, chevronOnly = false): ExperienceFieldSchema => ({
   // same as any other CMS field — that part is intentional, not a gap.
   label: /^primary/i.test(name) ? 'Primary Button' : /^secondary/i.test(name) ? 'Secondary Button' : 'Button',
   type: 'group',
+  role: 'button',
   fields: [
     // Ideal length is BUTTON_LABEL_IDEAL_LIMIT (30); the hard cap keeps layouts intact.
     boundedText('label', 60),
-    select('variant', ['primary', 'secondary', 'outline', 'white'], 'primary', `${name.slice(0, 8)}_var`),
+    select('variant', [...EDITABLE_BUTTON_VARIANTS], 'primary', `${name.slice(0, 8)}_var`),
     // Type Link: internal page, external URL, mail, tel, popup or none.
     select('linkType', ['internal', 'external', 'mail', 'tel', 'popup', 'none'], 'internal', `${name.slice(0, 8)}_link`),
     pageLink(),

@@ -1,11 +1,10 @@
 import React from 'react'
+import siteTheme from './siteTheme.json'
+import { mediaQueries, mobileMax, tabletMax } from './breakpoints'
 
 /**
- * Converts `designSystem.tokens` into the same CSS custom properties `styles.css` already reads
- * at `:root`. Grouping (colors/typography/spacing/radius/shadows/breakpoints) follows the
- * grouping named in docs/backend-architecture-v2.md's Design System strategy. `styles.css` holds
- * no token values: this runtime is the only emitter, and DEFAULT_DESIGN_TOKENS (below) covers any
- * token a Design System does not define.
+ * Converts the site's own design tokens into the CSS custom properties read by styles.css.
+ * siteTheme.json is owned by this frontend; page content from the DXP cannot override it.
  */
 
 type TokenGroup = Record<string, unknown>
@@ -35,7 +34,7 @@ const lineHeight = (value: unknown): string | undefined => {
   return typeof value === 'number' && Number.isFinite(value) ? String(value) : str(value)
 }
 
-// A token stored as {value, tablet, mobile} (DesignSystemView's per-breakpoint Ion editor) carries
+// A token stored as {value, tablet, mobile} carries
 // its narrower-width overrides here; a plain string/number token simply has none.
 const strAt = (value: unknown, key: 'tablet' | 'mobile'): string | undefined =>
   value && typeof value === 'object' && !Array.isArray(value) && key in value
@@ -44,8 +43,12 @@ const strAt = (value: unknown, key: 'tablet' | 'mobile'): string | undefined =>
 
 const cssVar = (name: string, value: string | undefined) => (value ? `  ${name}: ${value};\n` : '')
 
+/** One CSS variable per token of a scale (`--space-4`, `--radius-lg`, ...), so every token is usable. */
+const scale = (prefix: string, group: TokenGroup, keys: RegExp = /^[A-Za-z0-9_-]+$/) =>
+  Object.entries(group).filter(([name]) => keys.test(name)).map(([name, value]) => cssVar(`${prefix}${name}`, str(value))).join('')
+
 // Same token, same CSS var name, three widths. Desktop is the `:root` baseline; tablet/mobile
-// only exist if the token in Payload actually set them, so a token without overrides emits
+// only exist if the site token sets them, so a token without overrides emits
 // nothing here and keeps rendering as one fixed size at every width (pre-existing behavior).
 const cappedFontSize = (value: unknown): string | undefined => {
   const size = str(value)
@@ -133,29 +136,22 @@ export function designTokensToCSS(tokens: DesignTokens | null | undefined): stri
     cssVar('--line-height-tight', lineHeight(typography.lineHeightTight)) +
     cssVar('--line-height-body', lineHeight(typography.lineHeightBody)) +
     cssVar('--content-max', str(spacing.contentMax)) +
-    cssVar('--space-2', str(spacing['2'])) +
-    cssVar('--space-3', str(spacing['3'])) +
-    cssVar('--space-4', str(spacing['4'])) +
-    cssVar('--space-6', str(spacing['6'])) +
-    cssVar('--radius-lg', str(radius.lg)) +
-    cssVar('--radius-md', str(radius.md)) +
-    cssVar('--radius-sm', str(radius.sm)) +
-    cssVar('--shadow-card', str(shadows.card)) +
-    cssVar('--shadow-hover', str(shadows.hover))
+    scale('--space-', spacing, /^\d+$/) +
+    scale('--radius-', radius) +
+    scale('--shadow-', shadows)
 
   if (!body) return ''
   // Tablet/mobile blocks come after :root and after each other, so the cascade — not
   // specificity — picks the narrowest match; a token with no override at a given width just
   // keeps whatever the wider block (or :root) already set.
   return `:root {\n${body}}`
-    + (typeTablet ? `\n@media (max-width: 1024px) {\n:root {\n${typeTablet}}\n}` : '')
-    + (typeMobile ? `\n@media (max-width: 640px) {\n:root {\n${typeMobile}}\n}` : '')
+    + (typeTablet ? `\n@media (max-width: ${tabletMax}px) {\n:root {\n${typeTablet}}\n}` : '')
+    + (typeMobile ? `\n@media (max-width: ${mobileMax}px) {\n:root {\n${typeMobile}}\n}` : '')
 }
 
 /**
- * Contract + safety net: used only when the Design System of the page is missing a token (or the
- * page has none, e.g. 404 or password screens). The Design System stored in Payload always wins
- * because its block is rendered after this one; `styles.css` keeps no copy of these values.
+ * Base values cover missing site tokens and routes such as 404 and password screens.
+ * The site-owned theme follows this block in the cascade.
  */
 export const DEFAULT_DESIGN_TOKENS: DesignTokens = {
   colors: {
@@ -185,7 +181,7 @@ export const DEFAULT_DESIGN_TOKENS: DesignTokens = {
     lineHeightTight: 1.15,
     lineHeightBody: 1.6,
   },
-  spacing: { contentMax: '76rem', '2': '0.5rem', '3': '0.75rem', '4': '1rem', '6': '1.5rem' },
+  spacing: { contentMax: '76rem', '0': '0px', '1': '0.25rem', '2': '0.5rem', '3': '0.75rem', '4': '1rem', '5': '1.25rem', '6': '1.5rem', '8': '2rem', '10': '2.5rem', '12': '3rem', '16': '4rem', '20': '5rem', '24': '6rem' },
   radius: { lg: '1.25rem', md: '0.75rem', sm: '0.5rem' },
   shadows: {
     card: '0 10px 30px -10px #0f172a14',
@@ -195,7 +191,7 @@ export const DEFAULT_DESIGN_TOKENS: DesignTokens = {
 
 /** Rendered once by the public layout so every route (including 404 and auth screens) has the variables. */
 export function DesignSystemBaseStyle() {
-  return <DesignSystemStyle tokens={DEFAULT_DESIGN_TOKENS} />
+  return <><DesignSystemStyle tokens={DEFAULT_DESIGN_TOKENS} /><DesignSystemStyle tokens={siteTheme.tokens as DesignTokens} /></>
 }
 
 export function DesignSystemStyle({ tokens }: { tokens: DesignTokens | null | undefined }) {
@@ -217,8 +213,7 @@ type ButtonRecipe = {
   borderColorPressed?: unknown
 }
 
-/** Emits scoped variables for the one shared Button atom. The source is the protected
- * component-style record, so changing a recipe affects every instance of that variant. */
+/** Emits scoped variables for the one shared Button atom from this site's theme. */
 export function ButtonRecipeStyle({ style }: { style: Record<string, unknown> | undefined }) {
   const variants = style?.variants
   if (!variants || typeof variants !== 'object') return null
@@ -250,7 +245,7 @@ export function ButtonRecipeStyle({ style }: { style: Record<string, unknown> | 
       + cssVar('--button-font-size', size('fontSize', 'px'))
       + cssVar('--button-font-weight', size('fontWeight', ''))
   }
-  const sizingBlocks = ([['Desktop', '(min-width: 1025px)'], ['Tablet', '(min-width: 641px) and (max-width: 1024px)'], ['Mobile', '(max-width: 640px)']] as const)
+  const sizingBlocks = ([['Desktop', mediaQueries.desktop], ['Tablet', mediaQueries.tablet], ['Mobile', mediaQueries.mobile]] as const)
     .map(([device, media]) => ({ media, vars: sizing(device) }))
     .filter(({ vars }) => vars)
     .map(({ media, vars }) => `@media ${media} {\n.page-renderer {\n${vars}}\n}\n`)

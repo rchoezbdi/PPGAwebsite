@@ -2,6 +2,7 @@
 
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
+import { mediaQueries } from '@/experience/design-system/breakpoints'
 import { asMediaAlt, asMediaURL, text } from '../shared'
 
 type RelatedPlan = Record<string, unknown>
@@ -39,8 +40,8 @@ export default function RelatedPlansCarousel({ content, locale }: { content: Rec
     : cards.map((card, index) => ({ card, key: `plan-${index}`, clone: false }))
 
   useEffect(() => {
-    const desktop = window.matchMedia('(min-width: 1025px)')
-    const tablet = window.matchMedia('(min-width: 641px) and (max-width: 1024px)')
+    const desktop = window.matchMedia(mediaQueries.desktop)
+    const tablet = window.matchMedia(mediaQueries.tablet)
     const updateVisibleCards = () => setVisibleCards(desktop.matches ? 3 : tablet.matches ? 2 : 1)
     updateVisibleCards()
     desktop.addEventListener('change', updateVisibleCards)

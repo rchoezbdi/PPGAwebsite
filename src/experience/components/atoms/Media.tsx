@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useSyncExternalStore } from "react";
+import { mediaQueries } from "@/experience/design-system/breakpoints";
 
 const normalizeMediaURL = (value?: string | null) => {
   if (!value) return "";
@@ -57,7 +58,7 @@ export default function Media({
   const resolvedMobile = normalizeMediaURL(mobileSrc);
   const resolvedVideo = normalizeMediaURL(videoSrc);
   const resolvedMobileVideo = normalizeMediaURL(mobileVideoSrc);
-  const videoPoster = resolvedSrc && mediaQuery === "(max-width: 640px)" && resolvedSrc.startsWith("/api/media/file/")
+  const videoPoster = resolvedSrc && mediaQuery === mediaQueries.mobile && resolvedSrc.startsWith("/api/media/file/")
     ? `/_next/image?url=${encodeURIComponent(resolvedSrc)}&w=640&q=40`
     : resolvedSrc;
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -104,7 +105,7 @@ export default function Media({
           ref={videoRef}
         >
           {resolvedMobileVideo ? (
-            <source media="(max-width: 640px)" src={resolvedMobileVideo} />
+            <source media={mediaQueries.mobile} src={resolvedMobileVideo} />
           ) : null}
           <source src={resolvedVideo} />
         </video>
@@ -115,7 +116,7 @@ export default function Media({
   if (resolvedMobile) {
     return (
       <picture>
-        <source media="(max-width: 640px)" srcSet={resolvedMobile} />
+        <source media={mediaQueries.mobile} srcSet={resolvedMobile} />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           alt={alt}

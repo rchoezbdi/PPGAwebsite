@@ -2,6 +2,7 @@ import { useId } from "react";
 import Heading from "../atoms/Heading";
 import Label from "../atoms/Label";
 import Media from "../atoms/Media";
+import { mediaQueries } from "@/experience/design-system/breakpoints";
 import Text from "../atoms/Text";
 import CTAGroup from "./CTAGroup";
 import type { CTAContent } from "../shared";
@@ -121,10 +122,10 @@ export default function HeroSlide({
   const isFirstAidKit = layout === "first-aid-kit" || variant === "first-aid-kit";
   const isSplit = layout === "split" || variant === "split" || variant === "mascot";
   const desktopMediaQuery = hasTabletBackground
-    ? (hasMobileBackground ? "(min-width: 1025px)" : "(min-width: 1025px), (max-width: 640px)")
-    : hasMobileBackground ? "(min-width: 641px)" : undefined;
-  const tabletMediaQuery = hasTabletBackground ? "(min-width: 641px) and (max-width: 1024px)" : undefined;
-  const mobileMediaQuery = hasMobileBackground ? "(max-width: 640px)" : undefined;
+    ? (hasMobileBackground ? mediaQueries.desktop : mediaQueries.desktopOrMobile)
+    : hasMobileBackground ? mediaQueries.aboveMobile : undefined;
+  const tabletMediaQuery = hasTabletBackground ? mediaQueries.tablet : undefined;
+  const mobileMediaQuery = hasMobileBackground ? mediaQueries.mobile : undefined;
   const highlightStart = title && headingHighlight ? title.indexOf(headingHighlight) : -1;
   const headingContent = highlightStart >= 0 && title && headingHighlight
     ? <>{title.slice(0, highlightStart)}<strong>{headingHighlight}</strong>{title.slice(highlightStart + headingHighlight.length)}</>

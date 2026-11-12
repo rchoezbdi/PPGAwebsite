@@ -929,7 +929,7 @@ a {
 .form-grid.is-two-column {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   .form-grid.is-two-column {
     grid-template-columns: 1fr;
   }
@@ -1775,7 +1775,7 @@ h4.heading {
 .hero-slide__tablet-background {
   display: none;
 }
-@media (min-width: 641px) and (max-width: 1024px) {
+@media (min-width: bp(mobileMax+1)) and (max-width: bp(tabletMax)) {
   .hero-slide--has-tablet-background {
     background: var(--hero-slide-tablet-background);
   }
@@ -1786,7 +1786,7 @@ h4.heading {
     display: block;
   }
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   .hero-slide--has-mobile-background {
     background: var(--hero-slide-mobile-background);
   }
@@ -1806,12 +1806,12 @@ h4.heading {
 .hero-slide__copy-mobile { display: block; }
 .hero-slide__copy-tablet,
 .hero-slide__copy-mobile { display: none; }
-@media (min-width: 641px) and (max-width: 1024px) {
+@media (min-width: bp(mobileMax+1)) and (max-width: bp(tabletMax)) {
   .hero-slide__copy-desktop,
   .hero-slide__copy-mobile { display: none; }
   .hero-slide__copy-tablet { display: block; }
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   .hero-slide__copy-desktop,
   .hero-slide__copy-tablet { display: none; }
   .hero-slide__copy-mobile { display: block; }
@@ -1871,7 +1871,7 @@ h4.heading {
   content: none !important;
   display: none !important;
 }
-@media (max-width: 1024px) {
+@media (max-width: bp(tabletMax)) {
   .rich-section--first-aid-guide-heading h2 {
     font-size: var(--type-heading-2);
     line-height: 1.1667;
@@ -2022,7 +2022,7 @@ h4.heading {
   li:nth-child(2):not(:last-child):after {
   background: linear-gradient(var(--text-highlight), var(--brand));
 }
-@media (max-width: 1024px) {
+@media (max-width: bp(tabletMax)) {
   .page-renderer--first-aid-kit-medical-notification-authorization
     .rich-section--first-aid-notification-process
     h2 {
@@ -3234,7 +3234,7 @@ a.first-aid-guide-tabs__network-plan:focus-visible {
   text-align: center;
   grid-column: 1/-1;
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   .first-aid-guide-tabs__panel--network .first-aid-guide-tabs__network-banner {
     grid-template-columns: 5.5rem minmax(0, 1fr);
     gap: 1rem;
@@ -3712,7 +3712,7 @@ a.first-aid-guide-tabs__network-plan:focus-visible {
   --first-aid-banner-gap: 2rem;
   --first-aid-banner-pad: 2rem;
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   :root {
     --first-aid-banner-min-height: 9.5rem;
     --first-aid-banner-icon: 5rem;
@@ -3746,7 +3746,7 @@ a.first-aid-guide-tabs__network-plan:focus-visible {
 .first-aid-guide-tabs__banner h3 span {
   font-weight: 400;
 }
-@media (min-width: 641px) {
+@media (min-width: bp(mobileMax+1)) {
   .first-aid-guide-tabs__banner--repatriation h3 {
     transform: translateX(clamp(1rem, 2vw, 2rem));
   }
@@ -4263,7 +4263,7 @@ a.first-aid-guide-tabs__network-plan:focus-visible {
   text-underline-offset: 0.15em;
   text-decoration: underline;
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   .first-aid-notification-tab-content {
     padding-block: 2rem;
   }
@@ -4713,7 +4713,7 @@ a.first-aid-guide-tabs__network-plan:focus-visible {
     display: none;
   }
 }
-@media (min-width: 641px) and (max-width: 850px) {
+@media (min-width: bp(mobileMax+1)) and (max-width: 850px) {
   .first-aid-guide-tabs__list {
     flex-wrap: wrap;
     overflow: visible;
@@ -4836,7 +4836,7 @@ a.first-aid-guide-tabs__network-plan:focus-visible {
   .hero-slide__field-wrap[data-editor-field="primaryCTA"] {
   margin-top: 1rem;
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   .hero-slide--first-aid-kit .hero-slide__content {
     padding: 4.75rem var(--page-gutter) 5rem;
   }
@@ -5658,7 +5658,7 @@ a.first-aid-guide-tabs__network-plan:focus-visible {
 .product-document-viewer__state svg {
   color: var(--neutral-soft);
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   .product-documents {
     width: 100%;
   }
@@ -6143,7 +6143,7 @@ a.first-aid-guide-tabs__network-plan:focus-visible {
   position: sticky;
   top: 6rem;
 }
-@media (max-width: 1024px) {
+@media (max-width: bp(tabletMax)) {
   .blog-listing__content { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
   .blog-listing__sidebar { position: static; }
 }
@@ -6442,7 +6442,7 @@ a.first-aid-guide-tabs__network-plan:focus-visible {
 .blog-listing__grid--4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
-@media (max-width: 1024px) {
+@media (max-width: bp(tabletMax)) {
   .blog-listing__grid--4 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -6666,12 +6666,12 @@ a.first-aid-guide-tabs__network-plan:focus-visible {
 .blog-visual-spacer {
   height: var(--spacer-desktop);
 }
-@media (max-width: 1024px) {
+@media (max-width: bp(tabletMax)) {
   .blog-visual-spacer {
     height: var(--spacer-tablet);
   }
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   .blog-visual-spacer {
     height: var(--spacer-mobile);
   }
@@ -7494,7 +7494,7 @@ a.first-aid-guide-tabs__network-plan:focus-visible {
 .experience-utility-header__dropdown a:hover {
   background: var(--surface-alt);
 }
-@media (max-width: 1024px) {
+@media (max-width: bp(tabletMax)) {
   .experience-utility-header__inner {
     grid-template-columns: minmax(240px, 1fr) minmax(300px, 1.4fr) auto auto;
     padding: 14px 0;
@@ -7700,7 +7700,7 @@ a.first-aid-guide-tabs__network-plan:focus-visible {
 .mobile-slide-rotator__dots span.is-active {
   opacity: 1;
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   .experience-announcement__marquee-viewport {
     display: none;
   }
@@ -7817,7 +7817,7 @@ a.first-aid-guide-tabs__network-plan:focus-visible {
   left: 50%;
   transform: translate(-50%);
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   /* Arrows sit on the dots row so they never cover the heading or the button. */
   .hero-carousel__arrow {
     top: auto;
@@ -8649,7 +8649,7 @@ a.first-aid-guide-tabs__network-plan:focus-visible {
 .grid-section[data-columns="3"] .grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
-@media (max-width: 1024px) {
+@media (max-width: bp(tabletMax)) {
   .features-section--cols-4 > .section-container > .grid,
   .features-section[data-columns="4"] > .section-container > .grid,
   .grid-section--cols-4 .grid,
@@ -8657,7 +8657,7 @@ a.first-aid-guide-tabs__network-plan:focus-visible {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   .features-section--cols-4 > .section-container > .grid,
   .features-section[data-columns="4"] > .section-container > .grid,
   .grid-section--cols-4 .grid,
@@ -9864,7 +9864,7 @@ a.first-aid-guide-tabs__network-plan:focus-visible {
   font-size: var(--type-body-small);
   line-height: 1.5;
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   .features-section--careers-values {
     padding-block: 4.5rem 3rem;
   }
@@ -10476,7 +10476,7 @@ button.card__link {
     padding: 1.5rem;
   }
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   :is(
       .page-renderer--financial-strength,
       .page-renderer--solida-posicion-financiera,
@@ -10570,7 +10570,7 @@ button.card__link {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   .page-renderer:is(
       .page-renderer--why-best-doctors-insurance,
       .page-renderer--por-que-best-doctors-insurance
@@ -11062,7 +11062,7 @@ button.card__link {
     font-size: var(--type-caption);
   }
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   .experience-card-section__visual {
     min-height: 38rem;
   }
@@ -11375,7 +11375,7 @@ button.card__link {
     transform: rotate(-1.5deg) scaleX(1);
   }
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   :is(
       .page-renderer--become-a-distributor,
       .page-renderer--conviertete-en-distribuidor,
@@ -11525,7 +11525,7 @@ button.card__link {
   text-wrap: pretty;
   margin: 1.5rem 0 0;
 }
-@media (max-width: 1024px) {
+@media (max-width: bp(tabletMax)) {
   .rich-section--distributor-offer > .section-container {
     grid-template-columns: minmax(0, 1fr);
     gap: 1.75rem;
@@ -11547,7 +11547,7 @@ button.card__link {
     max-width: none;
   }
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   .rich-section--distributor-offer {
     padding-block: 2.5rem;
   }
@@ -11871,7 +11871,7 @@ button.card__link {
   > p {
   text-align: center;
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   .page-renderer:is(
       .page-renderer--become-a-distributor,
       .page-renderer--conviertete-en-distribuidor,
@@ -12225,7 +12225,7 @@ button.card__link {
   background: var(--text-highlight, var(--action-secondary));
   transform: scale(1.25);
 }
-@media (min-width: 641px) and (max-width: 1024px) {
+@media (min-width: bp(mobileMax+1)) and (max-width: bp(tabletMax)) {
   .related-plans-carousel {
     width: min(100%, 38rem);
   }
@@ -12239,7 +12239,7 @@ button.card__link {
     right: 0.5rem;
   }
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   .related-plans-carousel {
     width: 100%;
   }
@@ -12417,7 +12417,7 @@ button.card__link {
   font-size: var(--type-heading-4);
   line-height: 0.6;
 }
-@media (max-width: 1024px) {
+@media (max-width: bp(tabletMax)) {
   .page-renderer--support
     .experience-section-item[data-section-code="hero"]
     + .experience-section-item[data-section-code="card-grid"],
@@ -17591,7 +17591,7 @@ button.card__link {
   margin-inline: auto;
   display: block;
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   .page-renderer--first-aid-kit-medical-notification-authorization
     .first-aid-notification-tab-content__authorization-banner,
   .page-renderer--first-aid-kit-medical-notification-authorization
@@ -17659,7 +17659,7 @@ button.card__link {
 .first-aid-guide-tabs__network-reminder h4 {
   color: var(--button-primary-bg);
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   .first-aid-guide-tabs__panel :is(h2, h3, h4, h5).first-aid-split-heading {
     font-size: var(--type-heading-4);
   }
@@ -17834,7 +17834,7 @@ button.card__link {
   font-size: var(--type-body-small);
   line-height: 1.5;
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   .first-aid-deductible__benefits {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -17880,7 +17880,7 @@ button.card__link {
   font-size: var(--type-heading-4);
   line-height: 1.3;
 }
-@media (min-width: 641px) {
+@media (min-width: bp(mobileMax+1)) {
   .first-aid-guide-tabs__panel .first-aid-guide-tabs__network-headline {
     text-wrap: nowrap;
   }
@@ -17988,7 +17988,7 @@ button.card__link {
   a {
   font-weight: 700;
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   .first-aid-notification-tab-content--forms
     .first-aid-notification-tab-content__group--forms-instructions
     > ol
@@ -19430,7 +19430,7 @@ button.card__link {
   font-weight: 600;
   line-height: 1.5;
 }
-@media (max-width: 640px) {
+@media (max-width: bp(mobileMax)) {
   .first-aid-scheduled-appointments__items,
   .first-aid-scheduled-appointments__cases {
     grid-template-columns: minmax(0, 1fr);

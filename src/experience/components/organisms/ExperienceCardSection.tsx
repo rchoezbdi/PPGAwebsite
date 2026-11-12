@@ -1,4 +1,5 @@
 import Button from '../atoms/Button'
+import { mediaQueries } from '@/experience/design-system/breakpoints'
 import { asMediaAlt, asMediaURL, designTextColor, resolveCTA, text, type CTAContent } from '../shared'
 import type { ExperienceComponentProps } from '@/experience/registry/componentRegistry'
 
@@ -14,7 +15,7 @@ export default function ExperienceCardSection({ content, locale, site }: Experie
       </h2>
       <div className="experience-card-section__visual">
         {image ? <picture>
-          {mobileImage ? <source media="(max-width: 640px)" srcSet={mobileImage} /> : null}
+          {mobileImage ? <source media={mediaQueries.mobile} srcSet={mobileImage} /> : null}
           <img alt={asMediaAlt(content.image, text(content.imageAlt))} className="experience-card-section__image" loading="lazy" src={image} />
         </picture> : null}
         <div className="experience-card-section__card">

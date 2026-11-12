@@ -1,6 +1,7 @@
 import React from 'react'
 import { preload } from 'react-dom'
-import { ButtonRecipeStyle, DesignSystemStyle, type DesignTokens } from '@/experience/design-system/DesignSystemRuntime'
+import { ButtonRecipeStyle } from '@/experience/design-system/DesignSystemRuntime'
+import siteTheme from '@/experience/design-system/siteTheme.json'
 import { fontPreloadResources, FontStyle, type FontEntry } from '@/experience/design-system/FontRuntime'
 import IntegrationScripts from '@/components/IntegrationScripts'
 import { SectionTracker } from '@/experience/analytics/SectionTracker'
@@ -51,7 +52,7 @@ export function PageRenderer({
     : [...page.layout.before, ...filteredComponents, ...page.layout.after]
   const pageClass = String(page.slug || 'page').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
   if (page.slug === 'home') {
-    const fonts = page.designSystem?.fonts as FontEntry[] | undefined
+    const fonts = siteTheme.fonts as FontEntry[]
     // Home also uses Ms Madi in visible decorative headings; preload it with the primary fonts
     // to avoid discovering the same-origin DAM font only after the page stylesheet is parsed.
     for (const font of fontPreloadResources(fonts, ['HelveticaNeueBold', 'Inter', 'Ms Madi'])) {
@@ -78,9 +79,8 @@ export function PageRenderer({
 
   return (
     <main className={`page-renderer page-renderer--${pageClass}`} data-locale={activeLocale} data-page-slug={page.slug}>
-      <DesignSystemStyle tokens={(page.designSystem?.tokens ?? null) as DesignTokens | null} />
-      <ButtonRecipeStyle style={page.buttonStyle} />
-      <FontStyle fonts={page.designSystem?.fonts as FontEntry[] | undefined} />
+      <ButtonRecipeStyle style={siteTheme.buttonStyle} />
+      <FontStyle fonts={siteTheme.fonts as FontEntry[]} />
       {renderedComponents.map((component) => {
         const Component = resolveComponent(component.code)
         const sourceContent = (component.content || {}) as Record<string, unknown>

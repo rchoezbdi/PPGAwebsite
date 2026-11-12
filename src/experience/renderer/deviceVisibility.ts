@@ -1,3 +1,5 @@
+import { mediaQueries } from '@/experience/design-system/breakpoints'
+
 // Per-device visibility for page sections and for the individual fields inside them.
 //
 // Stored in the instance `visibility` JSON next to `hidden` / `locales`:
@@ -21,9 +23,9 @@ export type DeviceVisibility = {
 
 // Same breakpoints the Hero background and the preview device frames already use.
 const MEDIA: Record<VisibilityDevice, string> = {
-  desktop: '(min-width: 1025px)',
-  tablet: '(min-width: 641px) and (max-width: 1024px)',
-  mobile: '(max-width: 640px)',
+  desktop: mediaQueries.desktop,
+  tablet: mediaQueries.tablet,
+  mobile: mediaQueries.mobile,
 }
 const SAFE_NAME = /^[A-Za-z0-9_-]+$/
 

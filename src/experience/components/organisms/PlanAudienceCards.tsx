@@ -1,5 +1,6 @@
 import { resolveExperienceLink } from '@/experience/navigation/resolver'
 import type { ExperienceComponentProps } from '@/experience/registry/componentRegistry'
+import { mediaQueries, tabletMax } from '@/experience/design-system/breakpoints'
 import { planAudienceCardImages } from '@/experience/registry/catalog'
 import Image, { getImageProps } from 'next/image'
 import { asMediaAlt, asMediaDimension, asMediaOptimizerURL, asMediaURL, designTextColor, readButtonCTA, text, type CTAContent } from '../shared'
@@ -56,13 +57,13 @@ export default function PlanAudienceCards({ content, settings, locale, site }: E
               alt: imageAlt,
               height: asMediaDimension(card.imageMobile, 'height') ?? asMediaDimension(card.image, 'height') ?? 668,
               quality: 60,
-              sizes: '(max-width: 640px) calc(100vw - 3rem), 42rem',
+              sizes: `${mediaQueries.mobile} calc(100vw - 3rem), 42rem`,
               src: asMediaOptimizerURL(mobileImage),
               width: asMediaDimension(card.imageMobile, 'width') ?? asMediaDimension(card.image, 'width') ?? 1059,
             }).props : undefined
             return (
               <article className="plan-audience-cards__card" data-editor-field="cards" data-editor-index={index} key={`${card.title}-${index}`}>
-                {image ? <picture data-editor-field="cards" data-editor-index={index}>{mobileImageProps ? <source media="(max-width: 640px)" sizes={mobileImageProps.sizes} srcSet={mobileImageProps.srcSet} /> : null}<Image alt={imageAlt} fill loading="lazy" quality={60} sizes="(max-width: 640px) calc(100vw - 3rem), (max-width: 1024px) 50vw, 42rem" src={asMediaOptimizerURL(image)} /></picture> : null}
+                {image ? <picture data-editor-field="cards" data-editor-index={index}>{mobileImageProps ? <source media={mediaQueries.mobile} sizes={mobileImageProps.sizes} srcSet={mobileImageProps.srcSet} /> : null}<Image alt={imageAlt} fill loading="lazy" quality={60} sizes={`${mediaQueries.mobile} calc(100vw - 3rem), (max-width: ${tabletMax}px) 50vw, 42rem`} src={asMediaOptimizerURL(image)} /></picture> : null}
                 <div><h3 data-editor-field="cards" data-editor-index={index}>{card.title}</h3><span data-editor-field="cards" data-editor-index={index}><CTAButton cta={cta} defaultIcon="arrow-right" fallbackHref={href} locale={locale} site={site} /></span></div>
               </article>
             )

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import Icon from '@/experience/components/atoms/Icon'
-import { designTextColor } from '@/experience/components/shared'
+import { colorToken } from '@/experience/design-system/scale'
 
 type BackToTopProps = {
   content: Record<string, unknown>
@@ -32,8 +32,8 @@ export default function BackToTopRuntime({ content, settings }: BackToTopProps) 
   const position = asText(props.position, 'left') === 'right' ? 'right' : 'left'
   const configuredIcon = asText(props.icon, 'chevron-up').trim() || 'chevron-up'
   const icon = configuredIcon === '↑' || configuredIcon === 'arrow-up' ? 'chevron-up' : configuredIcon
-  const backgroundColor = designTextColor(props.backgroundColor) ?? asText(props.backgroundColor, 'var(--brand)')
-  const iconColor = designTextColor(props.iconColor) ?? asText(props.iconColor, 'var(--surface)')
+  const backgroundColor = colorToken(props.backgroundColor, 'var(--brand)')
+  const iconColor = colorToken(props.iconColor, 'var(--surface)')
 
   useEffect(() => {
     if (!enabled) return

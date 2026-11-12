@@ -1,0 +1,228 @@
+{
+  "tokens": {
+    "colors": {
+      "black": "#000000",
+      "brand": "#0B2159",
+      "accent": "#00C3FF",
+      "danger": "#D5372F",
+      "neutral": "#626A78",
+      "success": "#15803D",
+      "surface": "#FFFFFF",
+      "warning": "#D97706",
+      "surfaceAlt": "#F5F9FC",
+      "neutral-soft": "#CBD5E1",
+      "actionPrimary": "#00CEFF",
+      "textHighlight": "#007BAA",
+      "text-highlight": "#007BAA",
+      "actionSecondary": "#0B2159",
+      "actionOutlineText": "#0B2159",
+      "actionPrimaryText": "#0B2159",
+      "actionOutlineHover": "#F5F9FC",
+      "actionPrimaryHover": "#0085AC",
+      "actionOutlineBorder": "#0B2159",
+      "actionSecondaryText": "#FFFFFF",
+      "actionPrimaryPressed": "#007BAA",
+      "actionSecondaryHover": "#061D41"
+    },
+    "typography": {
+      "body": "16px",
+      "caption": "12px",
+      "display": {
+        "value": "48px",
+        "mobile": "38px",
+        "tablet": "44px"
+      },
+      "heading1": {
+        "value": "48px",
+        "mobile": "32px",
+        "tablet": "42px"
+      },
+      "heading2": {
+        "value": "40px",
+        "mobile": "30px",
+        "tablet": "36px"
+      },
+      "heading3": {
+        "value": "32px",
+        "mobile": "26px",
+        "tablet": "30px"
+      },
+      "heading4": {
+        "value": "24px",
+        "mobile": "20px",
+        "tablet": "22px"
+      },
+      "bodyLarge": "18px",
+      "bodySmall": "14px",
+      "fontFamily": "Inter, Arial, sans-serif",
+      "weightBold": "700",
+      "weightMedium": "500",
+      "weightRegular": "400",
+      "lineHeightBody": "1.6",
+      "weightSemibold": "600",
+      "lineHeightTight": "1.15",
+      "font-weight-bold": "700",
+      "lineHeightHeading": "1.25",
+      "font-weight-medium": "500",
+      "font-family-display": "Ms Madi, cursive",
+      "font-family-primary": "Inter, sans-serif",
+      "font-weight-regular": "400",
+      "font-family-fallback": "Noto Sans, sans-serif",
+      "font-weight-semibold": "600"
+    },
+    "spacing": {
+      "0": "0px",
+      "1": "4px",
+      "2": "8px",
+      "3": "12px",
+      "4": "16px",
+      "5": "20px",
+      "6": "24px",
+      "8": "32px",
+      "10": "40px",
+      "12": "48px",
+      "16": "64px",
+      "20": "80px",
+      "24": "96px",
+      "contentMax": "1200px"
+    },
+    "radius": {
+      "lg": "18px",
+      "md": "12px",
+      "sm": "6px",
+      "xl": "24px",
+      "none": "0px",
+      "pill": "999px"
+    },
+    "shadows": {
+      "card": "0 10px 30px rgba(11, 33, 89, 0.12)",
+      "hover": "0 16px 40px rgba(11, 33, 89, 0.18)",
+      "control": "0 2px 8px rgba(11, 33, 89, 0.08)",
+      "overlay": "0 28px 70px rgba(11, 33, 89, 0.28)"
+    },
+    "breakpoints": {
+      "wide": "1920px",
+      "mobile": "390px",
+      "tablet": "768px",
+      "desktop": "1440px",
+      "mobileMax": "640px",
+      "tabletMax": "1024px"
+    }
+  },
+  "buttonStyle": {
+    "variants": {
+      "outline": {
+        "textColor": "#0B2159",
+        "background": "transparent",
+        "borderColor": "#0B2159",
+        "backgroundHover": "#F5F9FC",
+        "backgroundPressed": "#F5F9FC"
+      },
+      "primary": {
+        "textColor": "#0B2159",
+        "background": "#00C3FF",
+        "borderColor": "transparent",
+        "backgroundHover": "#007BAA",
+        "backgroundPressed": "#007BAA"
+      },
+      "secondary": {
+        "textColor": "#FFFFFF",
+        "background": "#0B2159",
+        "borderColor": "transparent",
+        "backgroundHover": "#0B2159",
+        "backgroundPressed": "#0B2159"
+      }
+    },
+    "borderRadius": 50
+  },
+  "fonts": [
+    {
+      "font": {
+        "family": "HelveticaNeueLight",
+        "weight": 400,
+        "style": "normal",
+        "file": {
+          "url": "/fonts/HelveticaNeueLight-Wq8Aa7Lh8s1aubGJgOHRKHkYSrDMlT.otf",
+          "mimeType": "font/otf"
+        }
+      }
+    },
+    {
+      "font": {
+        "family": "HelveticaNeueBold",
+        "weight": 400,
+        "style": "normal",
+        "file": {
+          "url": "/fonts/HelveticaNeueBold-NBx5zpE5WE2MdEUWf5qxnrfPdC6VHI.otf",
+          "mimeType": "font/otf"
+        }
+      }
+    },
+    {
+      "font": {
+        "family": "Inter",
+        "weight": 400,
+        "style": "normal",
+        "file": {
+          "url": "/fonts/inter-6ab57b19.woff2",
+          "mimeType": "font/woff2"
+        }
+      }
+    },
+    {
+      "font": {
+        "family": "Inter",
+        "weight": 500,
+        "style": "normal",
+        "file": {
+          "url": "/fonts/inter-6ab57b19.woff2",
+          "mimeType": "font/woff2"
+        }
+      }
+    },
+    {
+      "font": {
+        "family": "Inter",
+        "weight": 600,
+        "style": "normal",
+        "file": {
+          "url": "/fonts/inter-6ab57b19.woff2",
+          "mimeType": "font/woff2"
+        }
+      }
+    },
+    {
+      "font": {
+        "family": "Inter",
+        "weight": 700,
+        "style": "normal",
+        "file": {
+          "url": "/fonts/inter-6ab57b19.woff2",
+          "mimeType": "font/woff2"
+        }
+      }
+    },
+    {
+      "font": {
+        "family": "Noto Sans",
+        "weight": 400,
+        "style": "normal",
+        "file": {
+          "url": "/fonts/notosans-40ec0452.woff2",
+          "mimeType": "font/woff2"
+        }
+      }
+    },
+    {
+      "font": {
+        "family": "Ms Madi",
+        "weight": 400,
+        "style": "normal",
+        "file": {
+          "url": "/fonts/msmadi-4fbbd54b.woff2",
+          "mimeType": "font/woff2"
+        }
+      }
+    }
+  ]
+}

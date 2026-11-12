@@ -4,6 +4,7 @@ import { canonicalPublicPath } from '@/lib/publicRoutes'
 
 export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname
+  if (path === '/editor-preview') return NextResponse.next()
   if (/^\/(?:share|preview|preview-canvas|preview-opening|set-password|reset-password|login)(?:\/|$)/.test(path)) return NextResponse.redirect(dxpURL(`${path}${request.nextUrl.search}`))
   if (path.startsWith('/site-render/')) return new NextResponse('Not found', { status: 404 })
   if (/\.[a-z0-9]+$/i.test(path)) return NextResponse.next()
