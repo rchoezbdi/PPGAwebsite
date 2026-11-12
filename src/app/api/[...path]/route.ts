@@ -1,4 +1,4 @@
-import { dxpURL } from '@/lib/dxp'
+import { dxpHeaders, dxpURL } from '@/lib/dxp'
 import { allowedPublicPath } from '@/lib/publicGateway'
 
 export const dynamic = 'force-dynamic'
@@ -13,7 +13,7 @@ async function forward(request: Request, { params }: { params: Promise<{ path: s
     url.pathname = '/api/site-runtime'
     url.search = new URLSearchParams({ resource: 'media', id: segments[1] }).toString()
   }
-  const headers = new Headers()
+  const headers = dxpHeaders()
   for (const key of ['accept', 'content-type', 'range', 'if-none-match', 'x-forwarded-for']) {
     const value = request.headers.get(key)
     if (value) headers.set(key, value)
