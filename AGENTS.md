@@ -7,6 +7,11 @@
 - Componentes y estilos: `src/experience` y `src/app/styles.css`. Preferir los tokens del Design System.
 - Verificar con `npm test`, `npm run build` y `npm run typecheck`.
 - Mantener la paridad del Page Builder mediante una entrega revisada de cambios visuales a la DXP, según README.
+- Para trabajar en la integración o añadir bloques editables, consulta `docs/frontend-site-contract.md` en el repositorio ExperienceBDI. No supongas que un `.tsx` nuevo aparece automáticamente en la DXP.
+- Una sección requiere componente/renderer, entrada en `src/experience/registry/catalog.ts`, esquema y datos de muestra coherentes, y contrato publicado por `/api/editing-contract`. Mantén estable su `code` y las claves de `content`.
+- El inventario de Design System se genera desde los componentes fuente y solo los lista para inspección/preview; no registra por sí mismo una sección insertable.
+- Todo campo que el sitio necesite editar en Page Builder debe estar declarado en el contrato. El renderer puede consumir otras claves si ya existen en `content`; no expongas secretos o datos privados como contenido público.
+- Coordina con la DXP cualquier cambio al DTO/API, al modelo de bloques guardados o a la definición de componentes que requiere el Page Builder. No subas la versión del contrato sin coordinación.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
