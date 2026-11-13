@@ -9,3 +9,9 @@ export type ComponentEditingPolicy = {
   /** The whole schema is presentation, so the section is not offered for insertion. */
   presentationOnly?: boolean
 }
+
+/** Editorial labels can live beside a renderer while catalog schemas remain the field source. */
+export type ComponentEditorialContract = {
+  type: string
+  fieldLabels: Readonly<Record<string, string>>
+}

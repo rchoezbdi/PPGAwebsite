@@ -1,0 +1,24 @@
+name: Sync DXP editing contract
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      app_slug:
+        description: DXP application slug
+        required: false
+permissions:
+  contents: read
+jobs:
+  sync:
+    if: github.event_name == 'workflow_dispatch' || (github.event.deployment_status.state == 'success' && (github.event.deployment.environment == 'production' || github.event.deployment.environment == 'Production'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm run sync:editing-contract
+        env:
+          DXP_URL: ${{ vars.DXP_URL }}
+          DXP_SITE_API_KEY: ${{ secrets.DXP_SITE_API_KEY }}
+          DXP_APP_SLUG: ${{ github.event.inputs.app_slug || vars.DXP_APP_SLUG || 'ppga' }}

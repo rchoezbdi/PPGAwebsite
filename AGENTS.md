@@ -12,6 +12,16 @@
 - El inventario de Design System se genera desde los componentes fuente y solo los lista para inspección/preview; no registra por sí mismo una sección insertable.
 - Todo campo que el sitio necesite editar en Page Builder debe estar declarado en el contrato. El renderer puede consumir otras claves si ya existen en `content`; no expongas secretos o datos privados como contenido público.
 - Coordina con la DXP cualquier cambio al DTO/API, al modelo de bloques guardados o a la definición de componentes que requiere el Page Builder. No subas la versión del contrato sin coordinación.
+- El catálogo sigue siendo la fuente de esquemas; un componente puede añadir etiquetas editoriales en un sidecar `*.editorial-contract.ts` junto a su renderer, registrado en `src/experience/components/contracts/index.ts`. Consulta `docs/editing-contract-sync.md`.
+- `page.composition` es opcional: solo se renderiza como snapshot publicado cuando el DTO lo incluye; sin él se conserva el orden heredado de DXP. No publiques manifiestos por despliegue.
+- La sincronización manual usa `npm run sync:editing-contract`, variables de repositorio `DXP_URL`/`DXP_APP_SLUG` y el secreto `DXP_SITE_API_KEY`; nunca guardes credenciales ni contenido editorial real en el contrato.
+
+## Evidencia GitHub/Copilot GPT Terra
+
+- Se conservan contractVersion 1 y preview protocol 1; `pages` y `page.composition` son opcionales. El renderer aplica solo secciones que coinciden con la composición publicada; sin ella conserva el orden previo.
+- Se agregó el sidecar editorial de Hero, se preservaron las variantes funcionales Button desde su módulo fuente y se conectaron GTM/Clarity a `page.integrations` manteniendo el consentimiento.
+- Se añadió la sincronización manual y su workflow de despliegue. No se modificaron DXP ni BDIL.
+- Validación PPGA: `npm test` (145 pruebas), `npm run typecheck` y `npm run build` completados correctamente.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

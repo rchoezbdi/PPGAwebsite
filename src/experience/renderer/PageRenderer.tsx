@@ -9,6 +9,7 @@ import BackToTopRuntime from '@/experience/runtime/BackToTopRuntime'
 import { resolveComponent, type ExperienceSite } from '@/experience/registry/componentRegistry'
 import { isPageChrome, type PageDTO } from '@/contracts/site'
 import { deviceVisibilityCss } from '@/experience/renderer/deviceVisibility'
+import { pageComponentsForRendering } from '@/experience/renderer/pageComposition'
 
 /**
  * Decides whether a PageComponent instance renders, from its own `visibility` JSON. The schema
@@ -38,9 +39,8 @@ export function PageRenderer({
 }) {
   const activeLocale = locale ?? page.locale ?? 'es'
   const localizedSite = { ...site, localizedRoutes: page.localizedRoutes }
-  const components = [...(page.components ?? [])]
+  const components = pageComponentsForRendering(page)
     .filter((component) => isVisible(component.visibility, activeLocale) && !(page.layout && isPageChrome(component.role)))
-    .sort((a, b) => a.position - b.position)
   const filteredComponents = hideGlobalLayout
     ? components.filter((component) => {
         const code = String(component.code ?? '').toLowerCase()

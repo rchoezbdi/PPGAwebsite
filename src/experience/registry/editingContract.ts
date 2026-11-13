@@ -1,4 +1,5 @@
-import { componentEditingPolicies } from '@/experience/components/contracts'
+import { componentEditingPolicies, componentEditorialContracts } from '@/experience/components/contracts'
+import { EDITABLE_BUTTON_VARIANTS } from '@/experience/components/atoms/buttonVariants'
 import { componentCatalog, type ExperienceFieldSchema } from '@/experience/registry/catalog'
 import { normalizeComponentCode } from '@/experience/registry/componentRegistry'
 import { componentSamples } from '@/experience/registry/componentSamples'
@@ -32,6 +33,17 @@ const isListed = (entries: string[] | undefined, path: string[]) =>
 const isFunctional = (type: string, path: string[]) => isListed(policyFor(type)?.functional, path)
 const isPresentationOption = (name: string) => /^(variant|buttonVariant|buttonIcon|icon|iconPosition|showIcon|showButton|background|alignment|width|height|size|gap|spacing|layout|theme|columns|color|.*Color|.*Gradient|.*BackgroundType|.*HoverBehavior|.*AspectRatio|.*Fit|.*Position)$/.test(name)
 
+function applyEditorialFieldLabels(fields: EditableField[], fieldLabels: Readonly<Record<string, string>>, parents: string[] = []): EditableField[] {
+  return fields.map((field) => {
+    const path = [...parents, field.name].join('.')
+    return {
+      ...field,
+      ...(fieldLabels[path] !== undefined ? { label: fieldLabels[path] } : {}),
+      ...(field.fields ? { fields: applyEditorialFieldLabels(field.fields, fieldLabels, [...parents, field.name]) } : {}),
+    }
+  })
+}
+
 function convert(field: ExperienceFieldSchema, siblings: ExperienceFieldSchema[], parents: string[], sectionType: string, inButton: boolean): EditableField | null {
   const path = [...parents, field.name]
   if (isListed(policyFor(sectionType)?.excluded, path)) return null
@@ -58,7 +70,8 @@ function convert(field: ExperienceFieldSchema, siblings: ExperienceFieldSchema[]
     if (!children.length) return null
     return { ...base, type: field.type, ...(button ? { role: 'button' as const } : {}), ...(field.minRows !== undefined ? { minRows: field.minRows } : {}), ...(field.maxRows !== undefined ? { maxRows: field.maxRows } : {}), fields: children }
   }
-  if ((field.type === 'select' || field.type === 'checkbox') && (inButton || isFunctional(sectionType, path)) && !isPresentationOption(field.name)) {
+  const isFunctionalButtonVariant = inButton && field.name === 'variant'
+  if ((field.type === 'select' || field.type === 'checkbox') && (inButton || isFunctional(sectionType, path)) && (!isPresentationOption(field.name) || isFunctionalButtonVariant)) {
     return field.type === 'select' ? { ...base, type: 'select', options: field.options ?? [] } : { ...base, type: 'checkbox' }
   }
   return null
@@ -66,7 +79,10 @@ function convert(field: ExperienceFieldSchema, siblings: ExperienceFieldSchema[]
 
 export function buildEditingContract(): SiteEditingContract {
   const sections: EditableSection[] = componentCatalog.map((item) => {
-    const fields = policyFor(item.type)?.presentationOnly ? [] : item.fields.map((field) => convert(field, item.fields, [], item.type, false)).filter((field): field is EditableField => Boolean(field))
+    const generatedFields = item.fields.map((field) => convert(field, item.fields, [], item.type, false)).filter((field): field is EditableField => Boolean(field))
+    const fields = policyFor(item.type)?.presentationOnly
+      ? []
+      : applyEditorialFieldLabels(generatedFields, componentEditorialContracts.get(item.type)?.fieldLabels ?? {})
     return {
       id: item.type,
       code: normalizeComponentCode(item.type),
@@ -82,18 +98,7 @@ export function buildEditingContract(): SiteEditingContract {
   return {
     contractVersion: EDITING_CONTRACT_VERSION,
     site: process.env.SITE_APP || 'site',
-    buttonVariants: [...new Set(sections.flatMap((section) => {
-      const variants: string[] = []
-      const visit = (fields: EditableField[]) => fields.forEach((field) => {
-        if (field.role === 'button') {
-          const variant = field.fields?.find((child) => child.name === 'variant')
-          if (variant?.type === 'select') variants.push(...(variant.options ?? []))
-        }
-        if (field.fields) visit(field.fields)
-      })
-      visit(section.fields)
-      return variants
-    }))],
+    buttonVariants: [...EDITABLE_BUTTON_VARIANTS],
     sections,
     design: {
       tokens: siteTheme.tokens,

@@ -1,4 +1,5 @@
 import type { ComponentEditingPolicy } from './types'
+import { heroEditorialContract } from '../organisms/Hero.editorial-contract'
 
 const policies: ComponentEditingPolicy[] = [
   { type: 'SectionLayout', presentationOnly: true },
@@ -19,3 +20,4 @@ const policies: ComponentEditingPolicy[] = [
 ]
 
 export const componentEditingPolicies: ReadonlyMap<string, ComponentEditingPolicy> = new Map(policies.map((policy) => [policy.type, policy]))
+export const componentEditorialContracts = new Map([[heroEditorialContract.type, heroEditorialContract]])

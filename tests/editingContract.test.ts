@@ -5,7 +5,7 @@ import { buildEditingContract } from '@/experience/registry/editingContract'
 import { componentRegistry } from '@/experience/registry/componentRegistry'
 import { EDITABLE_BUTTON_VARIANTS } from '@/experience/components/atoms/buttonVariants'
 import type { EditableField } from '@/contracts/editing'
-import { componentEditingPolicies } from '@/experience/components/contracts'
+import { componentEditorialContracts, componentEditingPolicies } from '@/experience/components/contracts'
 import { componentCatalog, type ExperienceFieldSchema } from '@/experience/registry/catalog'
 import { galleryVariants } from '@/app/editor-preview/galleryVariants'
 
@@ -60,9 +60,26 @@ describe('editing contract', () => {
 
   it('takes button variants from the Button module, never from a second list', () => {
     expect(contract.buttonVariants).toEqual([...EDITABLE_BUTTON_VARIANTS])
-    const variants = contract.sections.flatMap((section) => leaves(section.fields).filter(({ path, inButton }) => inButton && path.at(-1) === 'variant'))
+    const variants = contract.sections.flatMap((section) => leaves(section.fields).filter(({ field }) => field.name === 'variant'))
     expect(variants.length).toBeGreaterThan(0)
-    for (const { field } of variants) expect(field.options).toEqual([...EDITABLE_BUTTON_VARIANTS])
+    for (const { field, inButton } of variants) {
+      expect(inButton).toBe(true)
+      expect(field.options).toEqual([...EDITABLE_BUTTON_VARIANTS])
+    }
+  })
+
+  it('aggregates component-adjacent editorial labels without replacing catalog schemas', () => {
+    const hero = contract.sections.find((section) => section.id === 'Hero')!
+    const highlight = leaves(hero.fields).find(({ path }) => path.join('.') === 'slides.headingHighlight')
+    expect(highlight?.field.label).toBe('Texto resaltado del título')
+    expect(leaves(hero.fields).some(({ path }) => path.join('.') === 'slides.heading')).toBe(true)
+    for (const [type, editorialContract] of componentEditorialContracts) {
+      const section = contract.sections.find((entry) => entry.id === type)
+      expect(section, type).toBeDefined()
+      for (const path of Object.keys(editorialContract.fieldLabels)) {
+        expect(leaves(section!.fields).some((leaf) => leaf.path.join('.') === path), `${type}.${path}`).toBe(true)
+      }
+    }
   })
 
   it('publishes content, images, references and button fields only', () => {

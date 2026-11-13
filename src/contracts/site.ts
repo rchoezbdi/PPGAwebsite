@@ -7,6 +7,12 @@ export type AppLayoutPart = { componentId: string | number; code: string; conten
 export type AppLayout = { templateId: string | number; templateName: string; before: AppLayoutPart[]; after: AppLayoutPart[] }
 export const isPageChrome = (role: unknown): boolean => role === 'alert-banner' || role === 'header' || role === 'footer'
 export type RuntimeIntegration = { id: string | number; provider: string; loadingStrategy: string; consentPurposeId?: string | null; configuration: Record<string, unknown> }
+export type PageComponentDTO = { instanceId: string | number; componentId: string | number; name: string; code: string; role?: string; type: string; atomicLevel: string; position: number; slot?: string | null; content: Record<string, unknown>; settings: Record<string, unknown>; visibility: Record<string, unknown> }
+export type PageComposition = {
+  manifestId: string
+  version: number
+  sections: Array<{ instanceId: string; code: string; position: number }>
+}
 export interface PageDTO {
   id: string | number
   title: string
@@ -19,7 +25,8 @@ export interface PageDTO {
   status: string
   seo: Record<string, unknown>
   metadata: Record<string, unknown>
-  components: Array<{ instanceId: string | number; componentId: string | number; name: string; code: string; role?: string; type: string; atomicLevel: string; position: number; slot?: string | null; content: Record<string, unknown>; settings: Record<string, unknown>; visibility: Record<string, unknown> }>
+  components: PageComponentDTO[]
+  composition?: PageComposition
   layout?: AppLayout | null
   designSystem: { id: string | number; name: string; tokens: Record<string, unknown>; settings: Record<string, unknown>; fonts: unknown[] } | null
   buttonStyle?: Record<string, unknown>

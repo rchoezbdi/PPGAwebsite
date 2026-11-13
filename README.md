@@ -9,3 +9,7 @@ Standalone Next.js app for the PPGA public site. It reads published content from
 3. Run `npm run dev` and open `http://localhost:3002/`. A local DXP checkout is not required; the configured DXP API must be reachable. PPGA is Spanish-only, so it uses the root path rather than `/es` or `/PPGA`.
 
 This is an independent Git repository with its own GitHub remote, separate from BDIL.
+
+## Editing contract sync
+
+The public editing contract stays at version 1. See [the editing contract and DXP sync guide](docs/editing-contract-sync.md) for the component-adjacent contract convention, optional published page composition, and manual `npm run sync:editing-contract` command. Configure `DXP_URL` and `DXP_APP_SLUG` as repository variables and `DXP_SITE_API_KEY` as a repository secret for the deployment sync workflow.

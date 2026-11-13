@@ -55,6 +55,17 @@ export type PreviewCapabilities = {
 export type SiteEditingContract = {
   contractVersion: typeof EDITING_CONTRACT_VERSION
   site: string
+  pages?: Array<{
+    id: string
+    slug: string
+    path: string
+    version: number
+    sections: Array<{
+      instanceId: string
+      code: string
+      initialContent?: Record<string, unknown>
+    }>
+  }>
   buttonVariants: string[]
   sections: EditableSection[]
   preview: PreviewCapabilities

@@ -175,8 +175,14 @@ const languagePolicies = (value: unknown): Record<string, number> => {
   }))
 }
 
+const configurationValue = (value: unknown) =>
+  typeof value === 'string' || typeof value === 'number' ? String(value).trim() : ''
+const providerName = (value: string) => value.toLowerCase().replace(/[-_\s]/g, '')
+const runtimeIntegration = (integrations: RuntimeIntegration[], ...providers: string[]) =>
+  integrations.find((integration) => providers.some((provider) => providerName(integration.provider) === providerName(provider)))
+
 export default function IntegrationScripts({ integrations = [], locale = 'en', value }: { integrations?: RuntimeIntegration[]; locale?: string; value?: IntegrationEntry | null }) {
-  const runtimeIubenda = integrations.find((integration) => integration.provider === 'iubenda')
+  const runtimeIubenda = runtimeIntegration(integrations, 'iubenda')
   const runtimeIubendaConfig = runtimeIubenda?.configuration ?? {}
   const runtimeIubendaSiteId = typeof runtimeIubendaConfig.siteId === 'string' || typeof runtimeIubendaConfig.siteId === 'number'
     ? String(runtimeIubendaConfig.siteId).trim()
@@ -191,12 +197,20 @@ export default function IntegrationScripts({ integrations = [], locale = 'en', v
     : value?.iubenda
   const iubendaEnabled = Boolean(iubenda?.enabled && iubenda.siteId)
   const selectedPolicyId = runtimeLanguagePolicies[locale] ?? Number(runtimeIubendaPolicyId || iubenda?.policyId || 0)
-  const gtm = value?.googleTagManager
-  const clarity = value?.microsoftClarity
+  const runtimeGtm = runtimeIntegration(integrations, 'googleTagManager', 'gtm')
+  const runtimeGtmContainerId = configurationValue(runtimeGtm?.configuration.containerId)
+  const gtm = runtimeGtm
+    ? { enabled: Boolean(runtimeGtmContainerId), containerId: runtimeGtmContainerId, iubendaPurposeId: runtimeGtm.consentPurposeId }
+    : value?.googleTagManager
+  const runtimeClarity = runtimeIntegration(integrations, 'microsoftClarity', 'clarity')
+  const runtimeClarityProjectId = configurationValue(runtimeClarity?.configuration.projectId)
+  const clarity = runtimeClarity
+    ? { enabled: Boolean(runtimeClarityProjectId), projectId: runtimeClarityProjectId, iubendaPurposeId: runtimeClarity.consentPurposeId }
+    : value?.microsoftClarity
   const metaPixel = value?.metaPixel
   const linkedinInsight = value?.linkedinInsight
   const hubspot = value?.hubspot
-  const runtimeDialpad = integrations.find((integration) => integration.provider === 'dialpad')
+  const runtimeDialpad = runtimeIntegration(integrations, 'dialpad')
   const runtimeDialpadConfig = runtimeDialpad?.configuration ?? {}
   const runtimeChannelID = typeof runtimeDialpadConfig.channelId === 'string' ? runtimeDialpadConfig.channelId.trim() : ''
   const runtimeProviderEmail = typeof runtimeDialpadConfig.providerEmail === 'string' ? runtimeDialpadConfig.providerEmail.trim() : ''

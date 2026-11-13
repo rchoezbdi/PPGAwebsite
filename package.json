@@ -10,6 +10,7 @@
     "predev": "node scripts/generate-design-inventory.mjs",
     "prebuild": "node scripts/generate-design-inventory.mjs",
     "design:inventory": "node scripts/generate-design-inventory.mjs",
+    "sync:editing-contract": "node scripts/sync-editing-contract.mjs",
         "dev": "next dev --webpack -p 3002",
         "build": "next build --webpack",
         "start": "next start -p 3002",
