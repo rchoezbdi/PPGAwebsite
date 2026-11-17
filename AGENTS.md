@@ -20,8 +20,12 @@
 
 - Se conservan contractVersion 1 y preview protocol 1; `pages` y `page.composition` son opcionales. El renderer aplica solo secciones que coinciden con la composición publicada; sin ella conserva el orden previo.
 - Se agregó el sidecar editorial de Hero, se preservaron las variantes funcionales Button desde su módulo fuente y se conectaron GTM/Clarity a `page.integrations` manteniendo el consentimiento.
-- Se añadió la sincronización manual y su workflow de despliegue. No se modificaron DXP ni BDIL.
-- Validación PPGA: `npm test` (145 pruebas), `npm run typecheck` y `npm run build` completados correctamente.
+- Se añadió la sincronización manual y su workflow de despliegue; esa entrega no modificó DXP ni BDIL.
+- Validación PPGA: `npm test` (148 pruebas), `npm run typecheck` y `npm run build` completados correctamente.
+- En `?post=...`, el hero anterior a `blog-listing` muestra el título y la categoría localizados; el detalle evita repetirlos. La barra social queda adhesiva en escritorio y horizontal en móvil.
+- Validación de esta entrega: `npm test` (148 pruebas), `npm run typecheck`, `npm run build` y `git diff --check`.
+- La píldora de navegación del header flotante conserva el máximo de escritorio y respeta los gutters desde 768 px; en móvil sigue como barra plana. Revisado en BDIL (en/es/pt) y PPGA (es), sin desbordamiento ni solapamiento en las ventanas probadas.
+- Validación responsive: medición local a 1440, 1024, 900, 768 y 390 px en BDIL (en/es/pt) y PPGA (es); el menú visible no se solapa ni desborda, y en 768 px o menos queda oculto según el breakpoint. `git diff --check` pasó.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

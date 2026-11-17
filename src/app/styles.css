@@ -301,6 +301,12 @@ a {
   backdrop-filter: blur(14px);
   box-shadow: 0 20px 50px color-mix(in srgb, var(--brand) 10%, transparent);
 }
+@media (min-width: 768px) {
+  .experience-header--template-ellipse:not(.experience-header--compact)
+    .experience-header__inner {
+    width: calc(100% - 2 * var(--page-gutter));
+  }
+}
 /* The floating pill sits on top of the hero that follows it instead of reserving its own band:
    the header takes no height in the flow, so the hero starts where the header starts. Pages whose
    first section is not a hero keep the header in the flow. */
@@ -6577,13 +6583,24 @@ a.first-aid-guide-tabs__network-plan:focus-visible {
   padding-top: clamp(3rem, 6vw, 5rem);
 }
 .blog-detail__container {
-  max-width: 46rem;
-  position: relative;
+  max-width: calc(46rem + 2.75rem + 2rem);
+}
+.blog-detail__container--article {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 46rem);
+  align-items: start;
+  gap: 2rem;
+}
+.blog-detail__article {
+  min-width: 0;
+  grid-column: 2;
 }
 .blog-share-links {
-  position: absolute;
-  top: 0;
-  left: -4.85rem;
+  position: sticky;
+  top: calc(var(--experience-header-height, 84px) + var(--space-4, 1rem));
+  align-self: start;
+  grid-column: 1;
+  grid-row: 1;
   z-index: 2;
   flex-direction: column;
   gap: 0.5rem;
@@ -6744,25 +6761,25 @@ a.first-aid-guide-tabs__network-plan:focus-visible {
   margin-top: 0.5rem;
   font-size: var(--type-body-small);
 }
-.blog-detail__container > h1 {
+.blog-detail__article > h1 {
   color: var(--brand);
   font-size: var(--type-heading-1);
   line-height: var(--line-height-heading);
   text-wrap: balance;
 }
-.blog-detail__container > .blog-detail__title--h2 {
+.blog-detail__article > .blog-detail__title--h2 {
   font-size: var(--type-heading-2);
 }
-.blog-detail__container > .blog-detail__title--h3 {
+.blog-detail__article > .blog-detail__title--h3 {
   font-size: var(--type-heading-3);
 }
-.blog-detail__container > .blog-detail__title--left {
+.blog-detail__article > .blog-detail__title--left {
   text-align: left;
 }
-.blog-detail__container > .blog-detail__title--center {
+.blog-detail__article > .blog-detail__title--center {
   text-align: center;
 }
-.blog-detail__container > .blog-detail__title--right {
+.blog-detail__article > .blog-detail__title--right {
   text-align: right;
 }
 .blog-visual-image figcaption {
@@ -6843,8 +6860,17 @@ a.first-aid-guide-tabs__network-plan:focus-visible {
   display: inline-flex;
 }
 @media (max-width: 600px) {
+  .blog-detail__container--article {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+  .blog-detail__article {
+    grid-column: 1;
+  }
   .blog-share-links {
     position: static;
+    grid-column: 1;
+    grid-row: auto;
     flex-direction: row;
     margin-bottom: 1.25rem;
   }

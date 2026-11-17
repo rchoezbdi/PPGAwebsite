@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Icon from '../atoms/Icon'
 import HeroSlide from '../molecules/HeroSlide'
 import { asMediaURL, designTextColor, text, type CTAContent } from '../shared'
+import { useBlogArticleHero } from '../BlogArticleHeroContext'
 import type { ExperienceComponentProps } from '@/experience/registry/componentRegistry'
 
 type Slide = Record<string, unknown> & { primaryCTA?: CTAContent; secondaryCTA?: CTAContent }
@@ -27,6 +28,8 @@ const gradientBackground = (slide: Slide, prefix = '') => {
 /** One slide renders a static hero; multiple slides progressively enable carousel behavior. */
 export default function Hero({ content, settings, locale, site }: ExperienceComponentProps) {
   const p = { ...settings, ...content }
+  const blogArticle = useBlogArticleHero()
+  const articleHero = p.blogArticleHeadingHero === true ? blogArticle : null
   const configured = Array.isArray(p.slides) ? p.slides.filter((item): item is Slide => Boolean(item && typeof item === 'object')) : []
   const slides: Slide[] = configured.length ? configured : [p]
   const [activeIndex, setActiveIndex] = useState(0)
@@ -93,19 +96,19 @@ export default function Hero({ content, settings, locale, site }: ExperienceComp
                 background={background}
                 hasMobileBackground={hasMobileBackground}
                 hasTabletBackground={hasTabletBackground}
-                body={text(slide.body ?? slide.additionalText)}
+                body={articleHero ? '' : text(slide.body ?? slide.additionalText)}
                 bottomShape={shape}
                 bottomShapeDirection={choice(p.bottomShapeDirection, ['up', 'down'] as const, 'down')}
                 bottomShapeHeight={shapeHeight}
                 contentPosition={choice(slide.contentPosition ?? slide.textPosition ?? p.contentPosition, ['start', 'center', 'end'] as const, 'center')}
-                description={text(slide.description)}
-                tabletDescription={text(tabletCopy.descriptionText)}
-                mobileDescription={text(mobileCopy.descriptionText)}
+                description={articleHero ? '' : text(slide.description)}
+                tabletDescription={articleHero ? '' : text(tabletCopy.descriptionText)}
+                mobileDescription={articleHero ? '' : text(mobileCopy.descriptionText)}
                 embedUrl={backgroundType === 'embed' ? text(slide.embedUrl) : undefined}
                 mobileEmbedUrl={mobileType === 'embed' ? text(slide.mobileEmbedUrl) : undefined}
-                eyebrow={text(slide.eyebrow ?? p.eyebrow)}
-                tabletEyebrow={text(tabletCopy.eyebrowText)}
-                mobileEyebrow={text(mobileCopy.eyebrowText)}
+                eyebrow={articleHero ? articleHero.category ?? '' : text(slide.eyebrow ?? p.eyebrow)}
+                tabletEyebrow={articleHero ? articleHero.category ?? '' : text(tabletCopy.eyebrowText)}
+                mobileEyebrow={articleHero ? articleHero.category ?? '' : text(mobileCopy.eyebrowText)}
                 focalPosition={choice(slide.focalPosition ?? p.focalPosition, ['center', 'top', 'bottom', 'left', 'right'] as const, 'center')}
                 headingLevel={choice(slide.headingLevel ?? p.headingLevel, ['h1', 'h2'] as const, 'h1')}
                 height={choice(slide.height ?? p.height, ['small', 'medium', 'large', 'screen'] as const, 'large')}
@@ -121,12 +124,12 @@ export default function Hero({ content, settings, locale, site }: ExperienceComp
                 overlay={Boolean(slide.overlay)} overlayOpacity={Number(slide.overlayOpacity ?? 45)} poster={posterURL(slide.poster, slide.posterUrl)}
                 priority={slideIndex === 0}
                 primaryCTA={slide.primaryCTA} secondaryCTA={slide.secondaryCTA} site={site}
-                subtitle={text(slide.subtitle)} theme={choice(slide.theme, ['light', 'dark'] as const, 'dark')}
-                tabletSubtitle={text(tabletCopy.subtitleText)}
-                mobileSubtitle={text(mobileCopy.subtitleText)}
-                tabletTitle={text(tabletCopy.headingText)}
-                mobileTitle={text(mobileCopy.headingText)}
-                title={text(slide.heading ?? slide.title)} video={backgroundType === 'video' ? url(slide.video, slide.videoUrl) : ''}
+                subtitle={articleHero ? '' : text(slide.subtitle)} theme={choice(slide.theme, ['light', 'dark'] as const, 'dark')}
+                tabletSubtitle={articleHero ? '' : text(tabletCopy.subtitleText)}
+                mobileSubtitle={articleHero ? '' : text(mobileCopy.subtitleText)}
+                tabletTitle={articleHero?.title ?? text(tabletCopy.headingText)}
+                mobileTitle={articleHero?.title ?? text(mobileCopy.headingText)}
+                title={articleHero?.title ?? text(slide.heading ?? slide.title)} video={backgroundType === 'video' ? url(slide.video, slide.videoUrl) : ''}
                 videoAutoplay={slideIndex === activeIndex && slide.videoAutoplay !== false}
                 layout={slide.layout ? choice(slide.layout, ['default', 'split', 'mascot', 'first-aid-kit'] as const, 'default') : undefined}
                 variant={text(slide.variant ?? p.variant)}
@@ -136,7 +139,7 @@ export default function Hero({ content, settings, locale, site }: ExperienceComp
                 titleMedia={url(slide.titleMedia, slide.titleImageUrl)}
                 bottomShapeImage={text(slide.bottomShapeImage ?? p.bottomShapeImage)}
                 backgroundPattern={text(slide.backgroundPattern ?? p.backgroundPattern)}
-                headingHighlight={text(slide.headingHighlight ?? p.headingHighlight)}
+                headingHighlight={articleHero ? '' : text(slide.headingHighlight ?? p.headingHighlight)}
               />
             </div>
           )

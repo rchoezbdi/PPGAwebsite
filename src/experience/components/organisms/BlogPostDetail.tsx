@@ -13,6 +13,7 @@ import type { ExperienceComponentProps } from '@/experience/registry/componentRe
 import { resolveExperienceLink } from '@/experience/navigation/resolver'
 import { resolveComponent } from '@/experience/registry/componentRegistry'
 import BlogShareLinks from '../molecules/BlogShareLinks'
+import { useSetBlogArticleHero } from '../BlogArticleHeroContext'
 
 
 function ArticleTitle({ children, style }: { children: string; style?: BlogTitleStyle | null }) {
@@ -45,17 +46,40 @@ export default function BlogPostDetail({ content, settings, locale, site }: Expe
   const [post, setPost] = useState<AutomaticPost | null>(null)
   const [loading, setLoading] = useState(automatic)
   const [notFound, setNotFound] = useState(false)
+  const setBlogArticleHero = useSetBlogArticleHero()
 
   useEffect(() => {
     if (!automatic || !slug) return
+    let active = true
     setLoading(true)
     setNotFound(false)
+    setPost(null)
+    setBlogArticleHero?.(null)
     fetch(`/api/site-blog/${encodeURIComponent(slug)}?${new URLSearchParams({ app: site.slug || 'home', locale })}`)
       .then((res) => { if (!res.ok) throw new Error('not found'); return res.json() })
-      .then((data) => setPost(data))
-      .catch(() => setNotFound(true))
-      .finally(() => setLoading(false))
-  }, [automatic, slug, locale, site.slug])
+      .then((data) => {
+        if (!active) return
+        setPost(data)
+        if (typeof data.title === 'string') {
+          setBlogArticleHero?.({
+            title: data.title,
+            category: Array.isArray(data.categories) ? data.categories[0]?.name : undefined,
+          })
+        }
+      })
+      .catch(() => {
+        if (!active) return
+        setNotFound(true)
+        setBlogArticleHero?.(null)
+      })
+      .finally(() => {
+        if (active) setLoading(false)
+      })
+    return () => {
+      active = false
+      setBlogArticleHero?.(null)
+    }
+  }, [automatic, slug, locale, site.slug, setBlogArticleHero])
 
   const background = text(p.background)
   const className = `section${background && background !== 'white' ? ` section--${background}` : ''} blog-detail`
@@ -74,25 +98,28 @@ export default function BlogPostDetail({ content, settings, locale, site }: Expe
       </section>
     )
     const articleContent = withoutRepeatedCover(post.visualContent ?? [], post.coverImageUrl)
+    const articleTitleIsInHero = setBlogArticleHero !== undefined
     return (
       <section className={className}>
-        <div className="section-container blog-detail__container">
+        <div className="section-container blog-detail__container blog-detail__container--article">
           <BlogShareLinks locale={locale} title={post.title} />
-          {(post.categories[0]?.name || post.publishedAt || post.author) ? (
-            <div className="blog-detail__meta">
-              {post.categories[0]?.name ? <Label variant="category">{post.categories[0].name}</Label> : null}
-              {post.publishedAt ? <Text className="blog-detail__date" size="sm" tone="muted">{new Date(post.publishedAt).toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' })}</Text> : null}
-              {post.author ? <Text className="blog-detail__author" size="sm" tone="muted">{post.author}</Text> : null}
-            </div>
-          ) : null}
-          <ArticleTitle style={post.titleStyle}>{post.title}</ArticleTitle>
-          {post.excerpt ? <Text className="blog-detail__excerpt" size="lg" tone="muted">{post.excerpt}</Text> : null}
-          {post.coverImageUrl ? <div className="blog-detail__cover-wrap" style={coverStyleVars(post.coverStyle)}><Media alt={post.coverStyle?.alt || post.imageAlt || post.title} className="blog-detail__cover" priority src={post.coverImageUrl} /></div> : null}
-          {articleContent.length ? <div className="blog-detail__body blog-detail__visual-body">{articleContent.map((section) => {
-            const Component = resolveComponent(section.code)
-            return <div className="experience-section-item" data-section-code={section.code} key={section.instanceId}><Component content={{ ...section.content, localePaths: site.localizedRoutes ?? {} }} instanceId={section.instanceId} locale={locale} settings={section.settings} site={site} /></div>
-          })}</div> : <div className="blog-detail__body" dangerouslySetInnerHTML={{ __html: post.contentHtml }} />}
-          <Link className="blog-detail__back" href={backHref}>{backLabel}</Link>
+          <article className="blog-detail__article">
+            {(articleTitleIsInHero ? post.publishedAt || post.author : post.categories[0]?.name || post.publishedAt || post.author) ? (
+              <div className="blog-detail__meta">
+                {!articleTitleIsInHero && post.categories[0]?.name ? <Label variant="category">{post.categories[0].name}</Label> : null}
+                {post.publishedAt ? <Text className="blog-detail__date" size="sm" tone="muted">{new Date(post.publishedAt).toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' })}</Text> : null}
+                {post.author ? <Text className="blog-detail__author" size="sm" tone="muted">{post.author}</Text> : null}
+              </div>
+            ) : null}
+            {!articleTitleIsInHero ? <ArticleTitle style={post.titleStyle}>{post.title}</ArticleTitle> : null}
+            {post.excerpt ? <Text className="blog-detail__excerpt" size="lg" tone="muted">{post.excerpt}</Text> : null}
+            {post.coverImageUrl ? <div className="blog-detail__cover-wrap" style={coverStyleVars(post.coverStyle)}><Media alt={post.coverStyle?.alt || post.imageAlt || post.title} className="blog-detail__cover" priority src={post.coverImageUrl} /></div> : null}
+            {articleContent.length ? <div className="blog-detail__body blog-detail__visual-body">{articleContent.map((section) => {
+              const Component = resolveComponent(section.code)
+              return <div className="experience-section-item" data-section-code={section.code} key={section.instanceId}><Component content={{ ...section.content, localePaths: site.localizedRoutes ?? {} }} instanceId={section.instanceId} locale={locale} settings={section.settings} site={site} /></div>
+            })}</div> : <div className="blog-detail__body" dangerouslySetInnerHTML={{ __html: post.contentHtml }} />}
+            <Link className="blog-detail__back" href={backHref}>{backLabel}</Link>
+          </article>
         </div>
       </section>
     )
@@ -105,27 +132,29 @@ export default function BlogPostDetail({ content, settings, locale, site }: Expe
 
   return (
     <section className={className}>
-      <div className="section-container blog-detail__container">
+      <div className="section-container blog-detail__container blog-detail__container--article">
         <BlogShareLinks locale={locale} title={heading} />
-        {(text(p.category) || text(p.publishedAt) || text(p.author)) ? (
-          <div className="blog-detail__meta">
-            {text(p.category) ? <Label variant="category">{text(p.category)}</Label> : null}
-            {text(p.publishedAt) ? <Text className="blog-detail__date" size="sm" tone="muted">{text(p.publishedAt)}</Text> : null}
-            {text(p.author) ? <Text className="blog-detail__author" size="sm" tone="muted">{text(p.author)}</Text> : null}
+        <article className="blog-detail__article">
+          {(text(p.category) || text(p.publishedAt) || text(p.author)) ? (
+            <div className="blog-detail__meta">
+              {text(p.category) ? <Label variant="category">{text(p.category)}</Label> : null}
+              {text(p.publishedAt) ? <Text className="blog-detail__date" size="sm" tone="muted">{text(p.publishedAt)}</Text> : null}
+              {text(p.author) ? <Text className="blog-detail__author" size="sm" tone="muted">{text(p.author)}</Text> : null}
+            </div>
+          ) : null}
+          <ArticleTitle style={p.titleStyle as BlogTitleStyle | null | undefined}>{heading}</ArticleTitle>
+          {text(p.description) ? <Text className="blog-detail__excerpt" size="lg" tone="muted">{text(p.description)}</Text> : null}
+          {cover ? <div className="blog-detail__cover-wrap" style={coverStyleVars(p.coverStyle as BlogCoverStyle | null | undefined)}><Media alt={(p.coverStyle as BlogCoverStyle | undefined)?.alt || text(p.imageAlt) || heading} className="blog-detail__cover" priority src={cover} /></div> : null}
+          <div className={`blog-detail__body${visualContent.length ? ' blog-detail__visual-body' : ''}`}>
+            {visualContent.length ? visualContent.map((section) => {
+              const Component = resolveComponent(section.code)
+              return <div className="experience-section-item" data-section-code={section.code} key={section.instanceId}><Component content={section.content} instanceId={section.instanceId} locale={locale} settings={section.settings} site={site} /></div>
+            }) : body.split(/\n{2,}/).filter(Boolean).map((paragraph, index) => (
+              <p key={index}>{paragraph.split('\n').flatMap((line, lineIndex) => (lineIndex === 0 ? [line] : [<br key={lineIndex} />, line]))}</p>
+            ))}
           </div>
-        ) : null}
-        <ArticleTitle style={p.titleStyle as BlogTitleStyle | null | undefined}>{heading}</ArticleTitle>
-        {text(p.description) ? <Text className="blog-detail__excerpt" size="lg" tone="muted">{text(p.description)}</Text> : null}
-        {cover ? <div className="blog-detail__cover-wrap" style={coverStyleVars(p.coverStyle as BlogCoverStyle | null | undefined)}><Media alt={(p.coverStyle as BlogCoverStyle | undefined)?.alt || text(p.imageAlt) || heading} className="blog-detail__cover" priority src={cover} /></div> : null}
-        <div className={`blog-detail__body${visualContent.length ? ' blog-detail__visual-body' : ''}`}>
-          {visualContent.length ? visualContent.map((section) => {
-            const Component = resolveComponent(section.code)
-            return <div className="experience-section-item" data-section-code={section.code} key={section.instanceId}><Component content={section.content} instanceId={section.instanceId} locale={locale} settings={section.settings} site={site} /></div>
-          }) : body.split(/\n{2,}/).filter(Boolean).map((paragraph, index) => (
-            <p key={index}>{paragraph.split('\n').flatMap((line, lineIndex) => (lineIndex === 0 ? [line] : [<br key={lineIndex} />, line]))}</p>
-          ))}
-        </div>
-        {backHref ? <Link className="blog-detail__back" href={backHref}>{text(p.backLabel) || 'Back to Blog'}</Link> : null}
+          {backHref ? <Link className="blog-detail__back" href={backHref}>{text(p.backLabel) || 'Back to Blog'}</Link> : null}
+        </article>
       </div>
     </section>
   )

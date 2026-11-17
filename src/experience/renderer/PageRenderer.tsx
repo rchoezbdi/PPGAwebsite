@@ -6,10 +6,11 @@ import { fontPreloadResources, FontStyle, type FontEntry } from '@/experience/de
 import IntegrationScripts from '@/components/IntegrationScripts'
 import { SectionTracker } from '@/experience/analytics/SectionTracker'
 import BackToTopRuntime from '@/experience/runtime/BackToTopRuntime'
-import { resolveComponent, type ExperienceSite } from '@/experience/registry/componentRegistry'
+import { normalizeComponentCode, resolveComponent, type ExperienceSite } from '@/experience/registry/componentRegistry'
 import { isPageChrome, type PageDTO } from '@/contracts/site'
 import { deviceVisibilityCss } from '@/experience/renderer/deviceVisibility'
 import { pageComponentsForRendering } from '@/experience/renderer/pageComposition'
+import { BlogArticleHeroProvider } from '@/experience/components/BlogArticleHeroContext'
 
 /**
  * Decides whether a PageComponent instance renders, from its own `visibility` JSON. The schema
@@ -50,6 +51,11 @@ export function PageRenderer({
   const renderedComponents = hideGlobalLayout || !page.layout
     ? filteredComponents
     : [...page.layout.before, ...filteredComponents, ...page.layout.after]
+  const blogListingIndex = renderedComponents.findIndex((component) => normalizeComponentCode(String(component.code ?? '')) === 'blog-listing')
+  const blogArticleHero = blogListingIndex < 0
+    ? undefined
+    : renderedComponents.slice(0, blogListingIndex).reverse().find((component) => normalizeComponentCode(String(component.code ?? '')) === 'hero')
+  const blogArticleHeroInstanceId = blogArticleHero ? String(blogArticleHero.instanceId) : undefined
   const pageClass = String(page.slug || 'page').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
   if (page.slug === 'home') {
     const fonts = siteTheme.fonts as FontEntry[]
@@ -77,70 +83,76 @@ export function PageRenderer({
     if (iubendaPolicyId) preload(`https://www.iubenda.com/cookie-solution/confs/js/${encodeURIComponent(iubendaPolicyId)}.js`, { as: 'script' })
   }
 
+  const renderedComponentTree = renderedComponents.map((component) => {
+    const Component = resolveComponent(component.code)
+    const sourceContent = (component.content || {}) as Record<string, unknown>
+    const isBlogArticleHeadingHero = blogArticleHeroInstanceId !== undefined && String(component.instanceId) === blogArticleHeroInstanceId
+    const isFinancialPerformance = ['financial-information', 'resumen-financiero', 'resumo-financeiro'].includes(pageClass)
+      && component.position === 2
+      && String(component.code ?? '').toLowerCase() === 'rich-content'
+    const isFinancialMetrics = ['financial-information', 'resumen-financiero', 'resumo-financeiro'].includes(pageClass)
+      && String(component.code ?? '').toLowerCase() === 'company-impact-metrics'
+    // The published PPGA reference for this page has no CTA inside the image card.
+    // The CTA used to live in its own (hidden) section, so don't reintroduce it from
+    // the migrated card content in admin/secure previews.
+    const financialHeading = String(sourceContent.heading ?? '').toLowerCase()
+    const isFinancialPriorities = ['financial-information', 'resumen-financiero', 'resumo-financeiro'].includes(pageClass)
+      && String(component.code ?? '').toLowerCase() === 'feature-grid'
+      && Array.isArray(sourceContent.features)
+      && sourceContent.features.length === 3
+    const financialSectionVariant = ['financial-information', 'resumen-financiero', 'resumo-financeiro'].includes(pageClass)
+      && String(component.code ?? '').toLowerCase() === 'rich-content'
+      ? /priorit/.test(financialHeading) ? 'financial-priorities-intro'
+        : /simplifying|simplificando/.test(financialHeading) ? 'financial-simplifying'
+        : /launch|lanzamiento|lan[çc]amento|portf[oó]lio|portfolio/.test(financialHeading) ? 'financial-pro-portfolio'
+          : undefined
+      : undefined
+    const content: Record<string, unknown> = {
+      ...sourceContent,
+      ...(isBlogArticleHeadingHero ? { blogArticleHeadingHero: true } : {}),
+      ...(String(component.code ?? '').toLowerCase() === 'form' ? { turnstileSiteKey: process.env.TURNSTILE_SITE_KEY ?? '' } : {}),
+      ...(isFinancialPerformance ? { variant: 'financial-performance' } : {}),
+      ...(financialSectionVariant ? { variant: financialSectionVariant } : {}),
+      ...(isFinancialMetrics ? { financialPresentation: true } : {}),
+      ...(isFinancialPriorities ? { financialPriorities: true } : {}),
+      localePaths: page.localePaths ?? {},
+    }
+    const heading = typeof content.heading === 'string'
+      ? content.heading
+      : typeof content.title === 'string'
+      ? content.title
+      : ''
+
+    const deviceCss = deviceVisibilityCss(component.instanceId, 'visibility' in component ? component.visibility : undefined)
+    return (
+      <React.Fragment key={component.instanceId}>
+        {deviceCss ? <style>{deviceCss}</style> : null}
+        <div
+          className="experience-section-item"
+          data-section-code={component.code}
+          data-section-heading={heading}
+          data-section-id={String(component.instanceId)}
+          data-section-position={component.position}
+        >
+          <Component
+            content={content}
+            instanceId={component.instanceId}
+            locale={activeLocale}
+            settings={component.settings}
+            site={localizedSite}
+          />
+        </div>
+      </React.Fragment>
+    )
+  })
+
   return (
     <main className={`page-renderer page-renderer--${pageClass}`} data-locale={activeLocale} data-page-slug={page.slug}>
       <ButtonRecipeStyle style={siteTheme.buttonStyle} />
       <FontStyle fonts={siteTheme.fonts as FontEntry[]} />
-      {renderedComponents.map((component) => {
-        const Component = resolveComponent(component.code)
-        const sourceContent = (component.content || {}) as Record<string, unknown>
-        const isFinancialPerformance = ['financial-information', 'resumen-financiero', 'resumo-financeiro'].includes(pageClass)
-          && component.position === 2
-          && String(component.code ?? '').toLowerCase() === 'rich-content'
-        const isFinancialMetrics = ['financial-information', 'resumen-financiero', 'resumo-financeiro'].includes(pageClass)
-          && String(component.code ?? '').toLowerCase() === 'company-impact-metrics'
-        // The published PPGA reference for this page has no CTA inside the image card.
-        // The CTA used to live in its own (hidden) section, so don't reintroduce it from
-        // the migrated card content in admin/secure previews.
-        const financialHeading = String(sourceContent.heading ?? '').toLowerCase()
-        const isFinancialPriorities = ['financial-information', 'resumen-financiero', 'resumo-financeiro'].includes(pageClass)
-          && String(component.code ?? '').toLowerCase() === 'feature-grid'
-          && Array.isArray(sourceContent.features)
-          && sourceContent.features.length === 3
-        const financialSectionVariant = ['financial-information', 'resumen-financiero', 'resumo-financeiro'].includes(pageClass)
-          && String(component.code ?? '').toLowerCase() === 'rich-content'
-          ? /priorit/.test(financialHeading) ? 'financial-priorities-intro'
-            : /simplifying|simplificando/.test(financialHeading) ? 'financial-simplifying'
-            : /launch|lanzamiento|lan[çc]amento|portf[oó]lio|portfolio/.test(financialHeading) ? 'financial-pro-portfolio'
-              : undefined
-          : undefined
-        const content: Record<string, unknown> = {
-          ...sourceContent,
-          ...(String(component.code ?? '').toLowerCase() === 'form' ? { turnstileSiteKey: process.env.TURNSTILE_SITE_KEY ?? '' } : {}),
-          ...(isFinancialPerformance ? { variant: 'financial-performance' } : {}),
-          ...(financialSectionVariant ? { variant: financialSectionVariant } : {}),
-          ...(isFinancialMetrics ? { financialPresentation: true } : {}),
-          ...(isFinancialPriorities ? { financialPriorities: true } : {}),
-          localePaths: page.localePaths ?? {},
-        }
-        const heading = typeof content.heading === 'string'
-          ? content.heading
-          : typeof content.title === 'string'
-          ? content.title
-          : ''
-
-        const deviceCss = deviceVisibilityCss(component.instanceId, 'visibility' in component ? component.visibility : undefined)
-        return (
-          <React.Fragment key={component.instanceId}>
-          {deviceCss ? <style>{deviceCss}</style> : null}
-          <div
-            className="experience-section-item"
-            data-section-code={component.code}
-            data-section-heading={heading}
-            data-section-id={String(component.instanceId)}
-            data-section-position={component.position}
-          >
-            <Component
-              content={content}
-              instanceId={component.instanceId}
-              locale={activeLocale}
-              settings={component.settings}
-              site={localizedSite}
-            />
-          </div>
-          </React.Fragment>
-        )
-      })}
+      {blogArticleHeroInstanceId
+        ? <BlogArticleHeroProvider>{renderedComponentTree}</BlogArticleHeroProvider>
+        : renderedComponentTree}
       {!renderedComponents.length ? (
         <section className="section section--empty">
           <div className="section-container empty-state">
