@@ -26,6 +26,7 @@
 - Validación de esta entrega: `npm test` (148 pruebas), `npm run typecheck`, `npm run build` y `git diff --check`.
 - La píldora de navegación del header flotante conserva el máximo de escritorio y respeta los gutters desde 768 px; en móvil sigue como barra plana. Revisado en BDIL (en/es/pt) y PPGA (es), sin desbordamiento ni solapamiento en las ventanas probadas.
 - Validación responsive: medición local a 1440, 1024, 900, 768 y 390 px en BDIL (en/es/pt) y PPGA (es); el menú visible no se solapa ni desborda, y en 768 px o menos queda oculto según el breakpoint. `git diff --check` pasó.
+- Despliegue Production PPGA verificado: commit `2685ae4` quedó `READY` en Vercel. PPGA no tiene blog ni recibió registros de artículos; se incluyó únicamente su entrega de layout solicitada.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
