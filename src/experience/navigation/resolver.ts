@@ -6,11 +6,6 @@ export type ResolvedNavigationLink = { label?: string; href: string | null; isEx
 
 const empty = (): ResolvedNavigationLink => ({ href: null, isExternal: false, newWindow: false })
 const internal = (href: string | null): ResolvedNavigationLink => ({ href, isExternal: false, newWindow: false })
-const localAppPath = (href: string, fallbackSite?: string | null): string => {
-  if (process.env.NODE_ENV === 'production' || fallbackSite !== 'ppga' || !href.startsWith('/')) return href
-  if (href === '/ppga' || href.startsWith('/ppga/')) return href
-  return `/ppga${href === '/' ? '' : href}`
-}
 const locales = new Set(['en', 'es', 'pt'])
 const withoutLegacyLocale = (suffix: string): string => {
   if (!suffix.startsWith('?')) return suffix
@@ -41,9 +36,10 @@ const localDevelopmentHref = (url: string, fallbackSite?: string | null): string
     if (app === 'home' && !path) path = '/'
     const locale = parsed.pathname.match(/^\/(en|es|pt)(?:\/|$)/)?.[1] ?? (app === 'ppga' ? 'es' : 'en')
     const query = new URLSearchParams(parsed.search)
-    query.set('locale', locale)
+    if (app === 'ppga') query.delete('locale')
+    else query.set('locale', locale)
     const suffix = `${query.size ? `?${query}` : ''}${parsed.hash}`
-    return app === 'ppga' ? `/ppga${path === '/' ? '' : path}${suffix}` : `/${locale}${path === '/' ? '' : path}${suffix}`
+    return app === 'ppga' ? `${path === '/' ? '' : path}${suffix}` || '/' : `/${locale}${path === '/' ? '' : path}${suffix}`
   } catch {
     return null
   }
@@ -90,12 +86,15 @@ export const resolveExperienceLink = ({ linkType, page, url, locale = 'es', fall
     const routes = (id != null ? localizedRoutes?.[`id:${id}`] : undefined) ?? (slug ? localizedRoutes?.[`slug:${slug}`] : undefined)
     const match = /^([^?#]*)([?#].*)?$/.exec(url ?? '')
     const suffix = withoutLegacyLocale(match?.[2] ?? '')
-    if (routes) return internal(routes[locale] ? localAppPath(`${routes[locale]}${suffix}`, fallbackSite) : null)
+    if (routes) return internal(routes[locale] ? `${routes[locale]}${suffix}` : null)
     if (localizedRoutes) return empty()
     return slug ? internal(`/${locale}${slug === 'home' ? '' : `/${slug}`}`) : empty()
   }
 
   if (!url) return empty()
+  if (fallbackSite === 'ppga' && (url === '/ppga' || url.startsWith('/ppga/'))) {
+    return resolveExperienceLink({ url: url.slice('/ppga'.length) || '/', locale, fallbackSite, localizedRoutes })
+  }
   if (/^(?:[a-z][a-z\d+.-]*:|\/\/)/i.test(url)) {
     const sameAppPath = ppgaAbsolutePath(url)
     if (sameAppPath) return resolveExperienceLink({ url: sameAppPath, locale, fallbackSite, localizedRoutes })
@@ -113,8 +112,8 @@ export const resolveExperienceLink = ({ linkType, page, url, locale = 'es', fall
   if (isPublicPagePath) segments.shift()
   const slug = segments.join('/') || 'home'
   const routes = localizedRoutes?.[`slug:${slug}`]
-  if (routes) return internal(routes[locale] ? localAppPath(`${routes[locale]}${suffix}`, fallbackSite) : null)
-  if (!isPublicPagePath) return internal(localAppPath(url, fallbackSite))
+  if (routes) return internal(routes[locale] ? `${routes[locale]}${suffix}` : null)
+  if (!isPublicPagePath) return internal(url)
   if (localizedRoutes) return empty()
   return internal(`/${locale}${slug === 'home' ? '' : `/${slug}`}${suffix}`)
 }

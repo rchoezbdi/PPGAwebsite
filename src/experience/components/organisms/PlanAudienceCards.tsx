@@ -39,7 +39,7 @@ export default function PlanAudienceCards({ content, settings, locale, site }: E
           {cards.map((card, index) => {
             const link = resolveExperienceLink({ fallbackSite: site.slug, localizedRoutes: site.localizedRoutes, linkType: card.linkType ?? 'external', locale, page: card.page as Parameters<typeof resolveExperienceLink>[0]['page'], url: card.url })
             const ppgaFallback = site.slug === 'ppga' && card.linkType !== 'none'
-            const ppgaPlanPath = process.env.NODE_ENV === 'production' ? '/nuestros-planes' : '/ppga/nuestros-planes?locale=es'
+            const ppgaPlanPath = '/nuestros-planes'
             const href = link.href ?? (ppgaFallback ? `${ppgaPlanPath}${index === 1 ? '#corporate-group' : ''}` : null)
             const cta = readButtonCTA(card as Record<string, unknown>, {}, { icon: 'arrow-right', variant: 'primary' })
             // PPGA's legacy instance has the company photo assigned to the family card,

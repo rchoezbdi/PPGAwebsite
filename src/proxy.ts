@@ -5,6 +5,13 @@ import { canonicalPublicPath } from '@/lib/publicRoutes'
 export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname
   if (path === '/editor-preview') return NextResponse.next()
+  // Keep old local links working after PPGA moved from the /ppga subpath to its own origin.
+  if (path === '/ppga' || path.startsWith('/ppga/')) {
+    const destination = request.nextUrl.clone()
+    destination.pathname = path.slice('/ppga'.length) || '/'
+    destination.searchParams.delete('locale')
+    return NextResponse.redirect(destination, 308)
+  }
   if (/^\/(?:share|preview|preview-canvas|preview-opening|set-password|reset-password|login)(?:\/|$)/.test(path)) return NextResponse.redirect(dxpURL(`${path}${request.nextUrl.search}`))
   if (path.startsWith('/site-render/')) return new NextResponse('Not found', { status: 404 })
   if (/\.[a-z0-9]+$/i.test(path)) return NextResponse.next()

@@ -759,7 +759,7 @@ const getNetworkPlanSection = (groups: Array<{ heading: Extract<NotificationBloc
 const networkPlanHref = (slug: string, locale: string, site?: ExperienceSite) => {
   if (!site) return null
   if (site.localizedRoutes) return resolveExperienceLink({ page: { slug }, locale, fallbackSite: site.slug, localizedRoutes: site.localizedRoutes }).href
-  const path = site.slug === 'ppga' ? `/${slug}?locale=${locale}` : `/${locale}/${slug}`
+  const path = site.slug === 'ppga' ? `/${slug}` : `/${locale}/${slug}`
   return resolveExperienceLink({ url: path, locale, fallbackSite: site.slug }).href
 }
 const networkOverviewPatterns: Record<string, { heading?: RegExp; subtitle: RegExp; share: RegExp }> = {

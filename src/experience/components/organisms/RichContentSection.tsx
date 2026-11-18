@@ -85,7 +85,7 @@ export default function RichComponent({ content, locale, settings, site }: Exper
   )
   if (text(p.variant) === 'first-aid-guide-heading') {
     const parent = locale === 'pt' ? 'Kit de primeiros socorros' : locale === 'es' ? 'Kit de primeros auxilios' : 'First Aid Kit'
-    const parentHref = site.slug === 'ppga' ? (process.env.NODE_ENV === 'production' ? '/first-aid-kit' : '/ppga/first-aid-kit?locale=es') : `/${locale}/first-aid-kit`
+    const parentHref = site.slug === 'ppga' ? '/first-aid-kit' : `/${locale}/first-aid-kit`
     const highlight = text(p.headingHighlight)
     const prefix = highlight && text(p.heading).endsWith(highlight) ? text(p.heading).slice(0, -highlight.length).trimEnd() : text(p.heading)
     return (

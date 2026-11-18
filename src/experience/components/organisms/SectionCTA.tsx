@@ -55,7 +55,7 @@ export default function SectionCTA({ content, settings, locale, site }: Experien
         {!isWhyBestDoctorsSupport && text(p.description) ? <Text className="section-subtitle">{text(p.description)}</Text> : null}
         <CTAGroup alignment="center" locale={locale} primaryCTA={isWhyBestDoctorsSupport && p.primaryCTA ? {
           ...(p.primaryCTA as CTAContent),
-          ...(site?.slug === 'ppga' ? { href: '/ppga/soporte', url: undefined } : {}),
+          ...(site?.slug === 'ppga' ? { href: '/soporte', url: undefined } : {}),
           showIcon: (p.primaryCTA as CTAContent).showIcon ?? true,
           icon: text((p.primaryCTA as CTAContent).icon) || 'chevron-right',
         } : p.primaryCTA as CTAContent | undefined} secondaryCTA={p.secondaryCTA as CTAContent | undefined} site={site} />

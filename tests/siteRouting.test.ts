@@ -26,6 +26,14 @@ describe('Standalone site routing', () => {
     expect(destination.pathname).toBe('/site-render/ppga')
     expect(destination.searchParams.get('locale')).toBe('es')
   })
+  it('redirects the retired PPGA subpath to the root site path', async () => {
+    const result = await proxy(new NextRequest('http://localhost:3002/ppga/blog?locale=es&post=article'))
+    expect(result.status).toBe(308)
+    const destination = new URL(result.headers.get('location')!)
+    expect(destination.pathname).toBe('/blog')
+    expect(destination.searchParams.has('locale')).toBe(false)
+    expect(destination.searchParams.get('post')).toBe('article')
+  })
   it('keeps secure previews on the DXP', async () => {
     const result = await proxy(new NextRequest('http://localhost:3001/share/public-preview-token'))
     expect(result.headers.get('location')).toBe('http://localhost:3000/share/public-preview-token')
