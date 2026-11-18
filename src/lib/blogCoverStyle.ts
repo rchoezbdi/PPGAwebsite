@@ -7,6 +7,7 @@ export type BlogCoverStyle = {
   fit?: 'cover' | 'contain'
   position?: 'center' | 'top' | 'bottom' | 'left' | 'right'
   aspectRatio?: '16 / 9' | '4 / 3' | '3 / 2' | '1 / 1' | 'auto'
+  showAsHero?: boolean
 }
 
 const pick = <T extends string>(options: readonly T[], value: unknown): T | undefined => options.find((option) => option === value)
@@ -24,6 +25,7 @@ export const cleanCoverStyle = (value: unknown): BlogCoverStyle | null => {
     ...(pick(['cover', 'contain'] as const, raw.fit) ? { fit: pick(['cover', 'contain'] as const, raw.fit) } : {}),
     ...(pick(['center', 'top', 'bottom', 'left', 'right'] as const, raw.position) ? { position: pick(['center', 'top', 'bottom', 'left', 'right'] as const, raw.position) } : {}),
     ...(pick(['16 / 9', '4 / 3', '3 / 2', '1 / 1', 'auto'] as const, raw.aspectRatio) ? { aspectRatio: pick(['16 / 9', '4 / 3', '3 / 2', '1 / 1', 'auto'] as const, raw.aspectRatio) } : {}),
+    ...(typeof raw.showAsHero === 'boolean' ? { showAsHero: raw.showAsHero } : {}),
   }
   return Object.keys(style).length ? style : null
 }

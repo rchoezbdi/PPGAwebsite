@@ -6626,6 +6626,85 @@ a.first-aid-guide-tabs__network-plan:focus-visible {
   outline: 2px solid var(--focus-ring, var(--text-highlight));
   outline-offset: 2px;
 }
+.blog-share-footer {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+.blog-share-footer__title {
+  color: var(--brand);
+  font-weight: 700;
+}
+.blog-share-footer__actions,
+.blog-share-footer__social {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+.blog-share-footer__copy,
+.blog-share-footer__social a {
+  min-height: 2.75rem;
+  border: 1px solid var(--neutral-soft);
+  color: var(--neutral);
+  background: var(--surface);
+  border-radius: 999px;
+  align-items: center;
+  justify-content: center;
+  display: inline-flex;
+  transition: color .18s ease, border-color .18s ease, background .18s ease;
+}
+.blog-share-footer__copy {
+  gap: .5rem;
+  padding: 0 1rem;
+  font: inherit;
+  cursor: pointer;
+}
+.blog-share-footer__social a {
+  width: 2.75rem;
+  border-radius: var(--radius-sm);
+}
+.blog-share-footer__copy:hover,
+.blog-share-footer__copy:focus-visible,
+.blog-share-footer__social a:hover,
+.blog-share-footer__social a:focus-visible {
+  color: var(--button-primary-text);
+  border-color: var(--button-primary-bg);
+  background: var(--button-primary-bg);
+  outline: 2px solid var(--focus-ring, var(--text-highlight));
+  outline-offset: 2px;
+}
+.blog-share-footer__status {
+  flex-basis: 100%;
+  color: var(--text-muted);
+  font-size: var(--type-body-small);
+}
+.blog-detail__related {
+  margin-top: clamp(3rem, 6vw, 5rem);
+  padding: clamp(3rem, 6vw, 5rem) 0;
+  background: color-mix(in srgb, var(--brand) 6%, var(--surface));
+}
+.blog-detail__related-container {
+  max-width: 90rem;
+}
+.blog-detail__related-heading {
+  margin: 0 0 3rem;
+  color: var(--text-highlight, var(--brand));
+  font-size: var(--type-heading-2);
+  text-align: center;
+}
+.blog-detail__related-grid {
+  margin-top: 0;
+}
+.blog-detail__related-error {
+  color: var(--text-muted);
+  text-align: center;
+}
 .blog-detail__visual-body {
   gap: 1.5rem;
   display: grid;
@@ -6866,6 +6945,14 @@ a.first-aid-guide-tabs__network-plan:focus-visible {
   }
   .blog-detail__article {
     grid-column: 1;
+  }
+  .blog-share-footer {
+    grid-column: 1;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .blog-share-footer__actions {
+    flex-wrap: wrap;
   }
   .blog-share-links {
     position: static;

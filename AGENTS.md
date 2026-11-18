@@ -27,6 +27,8 @@
 - La píldora de navegación del header flotante conserva el máximo de escritorio y respeta los gutters desde 768 px; en móvil sigue como barra plana. Revisado en BDIL (en/es/pt) y PPGA (es), sin desbordamiento ni solapamiento en las ventanas probadas.
 - Validación responsive: medición local a 1440, 1024, 900, 768 y 390 px en BDIL (en/es/pt) y PPGA (es); el menú visible no se solapa ni desborda, y en 768 px o menos queda oculto según el breakpoint. `git diff --check` pasó.
 - Despliegue Production PPGA verificado: commit `2685ae4` quedó `READY` en Vercel. PPGA no tiene blog ni recibió registros de artículos; se incluyó únicamente su entrega de layout solicitada.
+- El template de detalle queda preparado para cerrar con compartir (incluye copiar enlace) y hasta tres artículos relacionados por categoría/localidad, excluye el artículo actual y completa desde el listado general si hace falta. La portada se oculta salvo `coverStyle.showAsHero === true`; PPGA no tiene registros de blogs.
+- Validación de esta entrega: `npm run typecheck`, 5 pruebas de `blogPostDetailLayout`/`blogArticleHero`, `npm run build` y `git diff --check`.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

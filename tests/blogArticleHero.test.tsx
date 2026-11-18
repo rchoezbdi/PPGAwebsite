@@ -25,6 +25,7 @@ describe('blog article hero', () => {
         excerpt: 'Article excerpt',
         categories: [{ name: category, slug: 'news' }],
         contentHtml: '<p>Article body</p>',
+        posts: [],
       }),
     }))
 
